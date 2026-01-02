@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OMNI V7 - Compact UI</title>
+    <style>
+        :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --blue: #58a6ff; --green: #238636; --red: #f85149; --gold: #d29922; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 8px; margin: 0; font-size: 12px; }
+        .container { max-width: 450px; margin: auto; }
+        
+        /* Backup & Export Row */
+        .backup-row { display: flex; gap: 4px; margin-bottom: 8px; }
+        .btn-io { flex: 1; padding: 8px; font-size: 10px; background: #21262d; border: 1px solid var(--border); color: var(--blue); border-radius: 6px; cursor: pointer; font-weight: bold; }
+
+        /* Master Box */
+        .master-box { background: #1c2128; border: 2px solid var(--border); border-radius: 10px; padding: 10px; text-align: center; margin-bottom: 8px; }
+        .master-val { font-size: 38px; font-weight: bold; margin: 0; line-height: 1.2; }
+        
+        /* Compact Input Section - Moved UP */
+        .control-panel { background: #1c2128; padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 8px; }
+        .input-row { display: flex; gap: 8px; align-items: center; justify-content: center; }
+        
+        input { width: 60px; height: 50px; border-radius: 8px; border: 2px solid var(--blue); background: #010409; color: white; font-size: 28px; text-align: center; outline: none; }
+        .btn-add { flex: 1; height: 50px; background: var(--blue); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .btn-undo { background: var(--red); color: white; border: none; width: 60px; height: 50px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 10px; }
+
+        .util-row { display: flex; gap: 5px; margin-top: 8px; }
+        .btn-util { flex: 1; padding: 8px; background: #30363d; color: white; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
+
+        /* Logic Table */
+        .live-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; background: var(--card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+        .live-table td { padding: 8px; text-align: center; border: 1px solid var(--border); font-weight: bold; font-size: 14px; }
+
+        /* History */
+        .history-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); background: var(--card); max-height: 300px; }
+        table.hist-table { width: 100%; border-collapse: collapse; }
+        .hist-table th { background: #21262d; padding: 8px; color: #8b949e; font-size: 10px; position: sticky; top: 0; }
+        .hist-table td { padding: 8px; border-bottom: 1px solid var(--border); text-align: center; font-size: 13px; }
+        
+        .B-text { color: var(--blue); } .S-text { color: var(--green); }
+        .match { color: var(--gold); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="backup-row">
+        <button class="btn-io" onclick="exportDigits()">💾 SAVE DIGITS</button>
+        <button class="btn-io" onclick="document.getElementById('fileIn').click()">📂 LOAD DIGITS</button>
+        <input type="file" id="fileIn" style="display:none" accept=".txt" onchange="importDigits(event)">
+    </div>
+
+    <div class="master-box">
+        <div id="mVal" class="master-val">-</div>
+        <div id="mConf" style="font-size: 10px; color: #8b949e;">ဂဏန်း ၈ လုံး အရင်ထည့်ပါ</div>
+    </div>
+
+    <div class="control-panel">
+        <div class="input-row">
+            <input type="number" id="numIn" placeholder="0" inputmode="numeric" oninput="if(this.value.length>1) this.value=this.value.slice(-1)">
+            <button class="btn-add" onclick="addNewDigit()">ADD & ANALYZE</button>
+            <button class="btn-undo" onclick="undoLast()">UNDO</button>
+        </div>
+        <div class="util-row">
+            <button id="copyBtn" class="btn-util" onclick="copyTable()">COPY TABLE</button>
+            <button class="btn-util" style="background:#21262d; color:#f85149" onclick="resetApp()">RESET</button>
+        </div>
+    </div>
+
+    <table class="live-table">
+        <tbody>
+            <tr><td style="color:#8b949e; font-size: 10px;">Sum(A)</td><td id="a5">-</td><td id="a7">-</td><td id="a10">-</td></tr>
+            <tr><td style="color:#8b949e; font-size: 10px;">Mat(B)</td><td id="b5">-</td><td id="b7">-</td><td id="b10">-</td></tr>
+            <tr><td style="color:#8b949e; font-size: 10px;">Tre(C)</td><td id="c5">-</td><td id="c7">-</td><td id="c10">-</td></tr>
+        </tbody>
+    </table>
+
+    <div class="history-wrapper">
+        <table class="hist-table">
+            <thead><tr><th>ID</th><th>Res</th><th>Pred</th><th>Cyc</th><th>ABC</th></tr></thead>
+            <tbody id="histBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    let digits = JSON.parse(localStorage.getItem('omni_v7_data')) || [];
+    let history = [];
+    let curP = {};
+
+    window.onload = () => { analyze(); };
+
+    function calcA(w, d) { return d.length < w ? "-" : (d.slice(-w).reduce((a,b)=>a+b,0) % 2 === 0 ? "S" : "B"); }
+    function calcB(w, d) { return d.length < w ? "-" : ((d.slice(-w).reduce((a,b)=>a+b,0) % 10) % 2 === 0 ? "S" : "B"); }
+    function calcC(w, d) {
+        let s = Math.min(w, d.length); if(s < 2) return "-";
+        let win = d.slice(-s);
+        let diff = ((win[win.length-1]+win[win.length-2])/2) - ((win[0]+win[1])/2);
+        return diff > 0 ? "B" : (diff < 0 ? "S" : (win[win.length-1] >= 5 ? "B" : "S"));
+    }
+
+    function analyze() {
+        history = [];
+        let temp = [];
+        let lp = { final: "-" };
+
+        digits.forEach((v) => {
+            const act = v >= 5 ? "B" : "S";
+            let cyc = "-";
+            if (temp.length >= 10) {
+                cyc = (act === (temp[temp.length-10] >= 5 ? "B" : "S")) ? "M" : "D";
+            }
+            if (lp.final !== "-") {
+                const ck = (p, a) => p === a ? "✅" : "❌";
+                history.unshift({
+                    id: history.length + 1,
+                    res: `${v}(${act})`,
+                    pred: `${lp.final}${ck(lp.final, act)}`,
+                    cyc: cyc,
+                    abc: `${ck(lp.a5, act)}|${ck(lp.b5, act)}|${ck(lp.c5, act)}`
+                });
+            }
+            temp.push(v);
+            if (temp.length >= 8) {
+                let a5=calcA(5,temp), a7=calcA(7,temp), a10=calcA(10,temp);
+                let b5=calcB(5,temp), b7=calcB(7,temp), b10=calcB(10,temp);
+                let c5=calcC(5,temp), c7=calcC(7,temp), c10=calcC(10,temp);
+                const vote = (l) => {
+                    let f = l.filter(x => x !== "-");
+                    return f.length === 0 ? "-" : (f.filter(x => x === "B").length >= (f.
