@@ -3,41 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OMNI V7 - Compact UI</title>
+    <title>OMNI V7 - iPad Optimized</title>
     <style>
         :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --blue: #58a6ff; --green: #238636; --red: #f85149; --gold: #d29922; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 8px; margin: 0; font-size: 12px; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 8px; margin: 0; }
         .container { max-width: 450px; margin: auto; }
-        
-        /* Backup & Export Row */
-        .backup-row { display: flex; gap: 4px; margin-bottom: 8px; }
-        .btn-io { flex: 1; padding: 8px; font-size: 10px; background: #21262d; border: 1px solid var(--border); color: var(--blue); border-radius: 6px; cursor: pointer; font-weight: bold; }
-
-        /* Master Box */
-        .master-box { background: #1c2128; border: 2px solid var(--border); border-radius: 10px; padding: 10px; text-align: center; margin-bottom: 8px; }
-        .master-val { font-size: 38px; font-weight: bold; margin: 0; line-height: 1.2; }
-        
-        /* Compact Input Section - Moved UP */
+        .master-box { background: #1c2128; border: 2px solid var(--border); border-radius: 10px; padding: 15px; text-align: center; margin-bottom: 8px; }
+        .master-val { font-size: 40px; font-weight: bold; margin: 0; }
         .control-panel { background: #1c2128; padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 8px; }
-        .input-row { display: flex; gap: 8px; align-items: center; justify-content: center; }
+        .input-row { display: flex; gap: 8px; }
         
-        input { width: 60px; height: 50px; border-radius: 8px; border: 2px solid var(--blue); background: #010409; color: white; font-size: 28px; text-align: center; outline: none; }
-        .btn-add { flex: 1; height: 50px; background: var(--blue); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
-        .btn-undo { background: var(--red); color: white; border: none; width: 60px; height: 50px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 10px; }
-
+        /* iPad မှာ နှိပ်ရလွယ်အောင် Input အကွက်ကို ပိုကြီးအောင်လုပ်ထားပါတယ် */
+        input { width: 80px; height: 60px; border-radius: 8px; border: 2px solid var(--blue); background: #010409; color: white; font-size: 32px; text-align: center; outline: none; }
+        
+        .btn-add { flex: 1; height: 60px; background: var(--blue); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 18px; cursor: pointer; }
+        .btn-undo { background: var(--red); color: white; border: none; width: 60px; border-radius: 8px; font-weight: bold; font-size: 12px; }
         .util-row { display: flex; gap: 5px; margin-top: 8px; }
-        .btn-util { flex: 1; padding: 8px; background: #30363d; color: white; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
-
-        /* Logic Table */
+        .btn-util { flex: 1; padding: 10px; background: #30363d; color: white; border: none; border-radius: 6px; font-size: 12px; }
         .live-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; background: var(--card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
         .live-table td { padding: 8px; text-align: center; border: 1px solid var(--border); font-weight: bold; font-size: 14px; }
-
-        /* History */
         .history-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); background: var(--card); max-height: 300px; }
         table.hist-table { width: 100%; border-collapse: collapse; }
-        .hist-table th { background: #21262d; padding: 8px; color: #8b949e; font-size: 10px; position: sticky; top: 0; }
-        .hist-table td { padding: 8px; border-bottom: 1px solid var(--border); text-align: center; font-size: 13px; }
-        
+        .hist-table th { background: #21262d; padding: 10px; font-size: 11px; position: sticky; top: 0; }
+        .hist-table td { padding: 10px; border-bottom: 1px solid var(--border); text-align: center; font-size: 14px; }
         .B-text { color: var(--blue); } .S-text { color: var(--green); }
         .match { color: var(--gold); font-weight: bold; }
     </style>
@@ -45,21 +33,15 @@
 <body>
 
 <div class="container">
-    <div class="backup-row">
-        <button class="btn-io" onclick="exportDigits()">💾 SAVE DIGITS</button>
-        <button class="btn-io" onclick="document.getElementById('fileIn').click()">📂 LOAD DIGITS</button>
-        <input type="file" id="fileIn" style="display:none" accept=".txt" onchange="importDigits(event)">
-    </div>
-
     <div class="master-box">
         <div id="mVal" class="master-val">-</div>
-        <div id="mConf" style="font-size: 10px; color: #8b949e;">ဂဏန်း ၈ လုံး အရင်ထည့်ပါ</div>
+        <div id="mConf" style="font-size: 12px; color: #8b949e; margin-top: 5px;">ဂဏန်း ၈ လုံး အရင်ထည့်ပါ</div>
     </div>
 
     <div class="control-panel">
         <div class="input-row">
-            <input type="number" id="numIn" placeholder="0" inputmode="numeric" oninput="if(this.value.length>1) this.value=this.value.slice(-1)">
-            <button class="btn-add" onclick="addNewDigit()">ADD & ANALYZE</button>
+            <input type="tel" id="numIn" placeholder="0" pattern="[0-9]*" oninput="if(this.value.length>1) this.value=this.value.slice(-1)">
+            <button class="btn-add" onclick="addNewDigit()">ADD</button>
             <button class="btn-undo" onclick="undoLast()">UNDO</button>
         </div>
         <div class="util-row">
@@ -70,9 +52,9 @@
 
     <table class="live-table">
         <tbody>
-            <tr><td style="color:#8b949e; font-size: 10px;">Sum(A)</td><td id="a5">-</td><td id="a7">-</td><td id="a10">-</td></tr>
-            <tr><td style="color:#8b949e; font-size: 10px;">Mat(B)</td><td id="b5">-</td><td id="b7">-</td><td id="b10">-</td></tr>
-            <tr><td style="color:#8b949e; font-size: 10px;">Tre(C)</td><td id="c5">-</td><td id="c7">-</td><td id="c10">-</td></tr>
+            <tr><td style="color:#8b949e">Sum(A)</td><td id="a5">-</td><td id="a7">-</td><td id="a10">-</td></tr>
+            <tr><td style="color:#8b949e">Mat(B)</td><td id="b5">-</td><td id="b7">-</td><td id="b10">-</td></tr>
+            <tr><td style="color:#8b949e">Tre(C)</td><td id="c5">-</td><td id="c7">-</td><td id="c10">-</td></tr>
         </tbody>
     </table>
 
@@ -85,7 +67,7 @@
 </div>
 
 <script>
-    let digits = JSON.parse(localStorage.getItem('omni_v7_data')) || [];
+    let digits = JSON.parse(localStorage.getItem('omni_v7_ipad')) || [];
     let history = [];
     let curP = {};
 
@@ -101,16 +83,11 @@
     }
 
     function analyze() {
-        history = [];
-        let temp = [];
-        let lp = { final: "-" };
-
+        history = []; let temp = []; let lp = { final: "-" };
         digits.forEach((v) => {
             const act = v >= 5 ? "B" : "S";
             let cyc = "-";
-            if (temp.length >= 10) {
-                cyc = (act === (temp[temp.length-10] >= 5 ? "B" : "S")) ? "M" : "D";
-            }
+            if (temp.length >= 10) cyc = (act === (temp[temp.length-10] >= 5 ? "B" : "S")) ? "M" : "D";
             if (lp.final !== "-") {
                 const ck = (p, a) => p === a ? "✅" : "❌";
                 history.unshift({
@@ -128,4 +105,31 @@
                 let c5=calcC(5,temp), c7=calcC(7,temp), c10=calcC(10,temp);
                 const vote = (l) => {
                     let f = l.filter(x => x !== "-");
-                    return f.length === 0 ? "-" : (f.filter(x => x === "B").length >= (f.
+                    return f.length === 0 ? "-" : (f.filter(x => x === "B").length >= (f.length/2) ? "B" : "S");
+                };
+                let v1=vote([a5,b5,c5]), v2=vote([a7,b7,c7]), v3=vote([a10,b10,c10]);
+                lp = { final: vote([v1,v2,v3]), a5, a7, a10, b5, b7, b10, c5, c7, c10 };
+            }
+        });
+        curP = lp; render();
+    }
+
+    function addNewDigit() {
+        const input = document.getElementById('numIn');
+        const v = parseInt(input.value);
+        if (isNaN(v)) return;
+        digits.push(v);
+        localStorage.setItem('omni_v7_ipad', JSON.stringify(digits));
+        input.value = "";
+        input.focus(); // iPad မှာ နောက်တစ်လုံးရိုက်ဖို့ အဆင်သင့်ဖြစ်စေရန်
+        analyze();
+    }
+
+    function undoLast() {
+        if (digits.length === 0) return;
+        if (confirm("Undo?")) { digits.pop(); localStorage.setItem('omni_v7_ipad', JSON.stringify(digits)); analyze(); }
+    }
+
+    function render() {
+        if (digits.length < 8) {
+            document.g
