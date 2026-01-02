@@ -3,29 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OMNI V7 - iPad Optimized</title>
+    <title>OMNI V7 - iPad Pro Touch</title>
     <style>
         :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --blue: #58a6ff; --green: #238636; --red: #f85149; --gold: #d29922; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 8px; margin: 0; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 8px; margin: 0; user-select: none; }
         .container { max-width: 450px; margin: auto; }
+        
         .master-box { background: #1c2128; border: 2px solid var(--border); border-radius: 10px; padding: 15px; text-align: center; margin-bottom: 8px; }
-        .master-val { font-size: 40px; font-weight: bold; margin: 0; }
-        .control-panel { background: #1c2128; padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 8px; }
-        .input-row { display: flex; gap: 8px; }
+        .master-val { font-size: 42px; font-weight: bold; margin: 0; }
         
-        /* iPad မှာ နှိပ်ရလွယ်အောင် Input အကွက်ကို ပိုကြီးအောင်လုပ်ထားပါတယ် */
-        input { width: 80px; height: 60px; border-radius: 8px; border: 2px solid var(--blue); background: #010409; color: white; font-size: 32px; text-align: center; outline: none; }
-        
-        .btn-add { flex: 1; height: 60px; background: var(--blue); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 18px; cursor: pointer; }
-        .btn-undo { background: var(--red); color: white; border: none; width: 60px; border-radius: 8px; font-weight: bold; font-size: 12px; }
-        .util-row { display: flex; gap: 5px; margin-top: 8px; }
-        .btn-util { flex: 1; padding: 10px; background: #30363d; color: white; border: none; border-radius: 6px; font-size: 12px; }
-        .live-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; background: var(--card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
-        .live-table td { padding: 8px; text-align: center; border: 1px solid var(--border); font-weight: bold; font-size: 14px; }
-        .history-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); background: var(--card); max-height: 300px; }
+        /* Custom Keypad for iPad */
+        .keypad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px; background: #1c2128; padding: 10px; border-radius: 12px; border: 1px solid var(--border); }
+        .key { background: #21262d; border: 1px solid var(--border); color: white; padding: 15px 0; border-radius: 8px; font-size: 20px; font-weight: bold; cursor: pointer; text-align: center; }
+        .key:active { background: var(--blue); }
+        .key.undo { background: var(--red); grid-column: span 1; }
+
+        .util-row { display: flex; gap: 5px; margin-bottom: 10px; }
+        .btn-util { flex: 1; padding: 12px; background: #30363d; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: bold; }
+
+        .live-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; background: var(--card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+        .live-table td { padding: 10px; text-align: center; border: 1px solid var(--border); font-weight: bold; font-size: 14px; }
+
+        .history-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); background: var(--card); max-height: 250px; }
         table.hist-table { width: 100%; border-collapse: collapse; }
         .hist-table th { background: #21262d; padding: 10px; font-size: 11px; position: sticky; top: 0; }
         .hist-table td { padding: 10px; border-bottom: 1px solid var(--border); text-align: center; font-size: 14px; }
+        
         .B-text { color: var(--blue); } .S-text { color: var(--green); }
         .match { color: var(--gold); font-weight: bold; }
     </style>
@@ -35,19 +38,26 @@
 <div class="container">
     <div class="master-box">
         <div id="mVal" class="master-val">-</div>
-        <div id="mConf" style="font-size: 12px; color: #8b949e; margin-top: 5px;">ဂဏန်း ၈ လုံး အရင်ထည့်ပါ</div>
+        <div id="mConf" style="font-size: 12px; color: #8b949e; margin-top: 5px;">ဂဏန်းနှိပ်ပေးပါ</div>
     </div>
 
-    <div class="control-panel">
-        <div class="input-row">
-            <input type="tel" id="numIn" placeholder="0" pattern="[0-9]*" oninput="if(this.value.length>1) this.value=this.value.slice(-1)">
-            <button class="btn-add" onclick="addNewDigit()">ADD</button>
-            <button class="btn-undo" onclick="undoLast()">UNDO</button>
-        </div>
-        <div class="util-row">
-            <button id="copyBtn" class="btn-util" onclick="copyTable()">COPY TABLE</button>
-            <button class="btn-util" style="background:#21262d; color:#f85149" onclick="resetApp()">RESET</button>
-        </div>
+    <div class="keypad">
+        <div class="key" onclick="pressKey(1)">1</div>
+        <div class="key" onclick="pressKey(2)">2</div>
+        <div class="key" onclick="pressKey(3)">3</div>
+        <div class="key" onclick="pressKey(4)">4</div>
+        <div class="key" onclick="pressKey(5)">5</div>
+        <div class="key" onclick="pressKey(6)">6</div>
+        <div class="key" onclick="pressKey(7)">7</div>
+        <div class="key" onclick="pressKey(8)">8</div>
+        <div class="key" onclick="pressKey(9)">9</div>
+        <div class="key" onclick="pressKey(0)">0</div>
+    </div>
+
+    <div class="util-row">
+        <button class="btn-util" style="background: var(--red);" onclick="undoLast()">UNDO LAST</button>
+        <button id="copyBtn" class="btn-util" onclick="copyTable()">COPY TABLE</button>
+        <button class="btn-util" style="background: #21262d;" onclick="resetApp()">RESET</button>
     </div>
 
     <table class="live-table">
@@ -67,7 +77,7 @@
 </div>
 
 <script>
-    let digits = JSON.parse(localStorage.getItem('omni_v7_ipad')) || [];
+    let digits = JSON.parse(localStorage.getItem('omni_v7_touch')) || [];
     let history = [];
     let curP = {};
 
@@ -80,6 +90,12 @@
         let win = d.slice(-s);
         let diff = ((win[win.length-1]+win[win.length-2])/2) - ((win[0]+win[1])/2);
         return diff > 0 ? "B" : (diff < 0 ? "S" : (win[win.length-1] >= 5 ? "B" : "S"));
+    }
+
+    function pressKey(num) {
+        digits.push(num);
+        localStorage.setItem('omni_v7_touch', JSON.stringify(digits));
+        analyze();
     }
 
     function analyze() {
@@ -114,22 +130,14 @@
         curP = lp; render();
     }
 
-    function addNewDigit() {
-        const input = document.getElementById('numIn');
-        const v = parseInt(input.value);
-        if (isNaN(v)) return;
-        digits.push(v);
-        localStorage.setItem('omni_v7_ipad', JSON.stringify(digits));
-        input.value = "";
-        input.focus(); // iPad မှာ နောက်တစ်လုံးရိုက်ဖို့ အဆင်သင့်ဖြစ်စေရန်
-        analyze();
-    }
-
     function undoLast() {
         if (digits.length === 0) return;
-        if (confirm("Undo?")) { digits.pop(); localStorage.setItem('omni_v7_ipad', JSON.stringify(digits)); analyze(); }
+        digits.pop();
+        localStorage.setItem('omni_v7_touch', JSON.stringify(digits));
+        analyze();
     }
 
     function render() {
         if (digits.length < 8) {
-            document.g
+            document.getElementById('mConf').innerText = `${8 - digits.length} လုံး လိုပါသေးသည်`;
+            document.getElementById('mV
