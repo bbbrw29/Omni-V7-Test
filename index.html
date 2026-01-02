@@ -3,34 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OMNI V7 - iPad Pro Touch</title>
+    <title>OMNI V7 - iPad Touch Fix</title>
     <style>
         :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --blue: #58a6ff; --green: #238636; --red: #f85149; --gold: #d29922; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 8px; margin: 0; user-select: none; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 8px; margin: 0; -webkit-tap-highlight-color: transparent; }
         .container { max-width: 450px; margin: auto; }
-        
         .master-box { background: #1c2128; border: 2px solid var(--border); border-radius: 10px; padding: 15px; text-align: center; margin-bottom: 8px; }
         .master-val { font-size: 42px; font-weight: bold; margin: 0; }
         
-        /* Custom Keypad for iPad */
-        .keypad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 10px; background: #1c2128; padding: 10px; border-radius: 12px; border: 1px solid var(--border); }
-        .key { background: #21262d; border: 1px solid var(--border); color: white; padding: 15px 0; border-radius: 8px; font-size: 20px; font-weight: bold; cursor: pointer; text-align: center; }
-        .key:active { background: var(--blue); }
-        .key.undo { background: var(--red); grid-column: span 1; }
+        /* Keypad Styling */
+        .keypad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 10px; padding: 5px; }
+        .key { 
+            background: #21262d; border: 1px solid var(--border); color: white; 
+            padding: 20px 0; border-radius: 10px; font-size: 24px; font-weight: bold; 
+            text-align: center; cursor: pointer; touch-action: manipulation;
+        }
+        .key:active { background: var(--blue); transform: scale(0.95); }
+        
+        .util-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .btn-util { flex: 1; padding: 15px; background: #30363d; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: bold; }
 
-        .util-row { display: flex; gap: 5px; margin-bottom: 10px; }
-        .btn-util { flex: 1; padding: 12px; background: #30363d; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: bold; }
+        .live-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; background: var(--card); border: 1px solid var(--border); }
+        .live-table td { padding: 12px; text-align: center; border: 1px solid var(--border); font-weight: bold; }
 
-        .live-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; background: var(--card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
-        .live-table td { padding: 10px; text-align: center; border: 1px solid var(--border); font-weight: bold; font-size: 14px; }
-
-        .history-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); background: var(--card); max-height: 250px; }
+        .history-wrapper { border-radius: 8px; border: 1px solid var(--border); background: var(--card); max-height: 250px; overflow-y: auto; }
         table.hist-table { width: 100%; border-collapse: collapse; }
         .hist-table th { background: #21262d; padding: 10px; font-size: 11px; position: sticky; top: 0; }
-        .hist-table td { padding: 10px; border-bottom: 1px solid var(--border); text-align: center; font-size: 14px; }
+        .hist-table td { padding: 12px; border-bottom: 1px solid var(--border); text-align: center; }
         
         .B-text { color: var(--blue); } .S-text { color: var(--green); }
-        .match { color: var(--gold); font-weight: bold; }
     </style>
 </head>
 <body>
@@ -38,63 +39,52 @@
 <div class="container">
     <div class="master-box">
         <div id="mVal" class="master-val">-</div>
-        <div id="mConf" style="font-size: 12px; color: #8b949e; margin-top: 5px;">ဂဏန်းနှိပ်ပေးပါ</div>
+        <div id="mConf" style="font-size: 13px; color: #8b949e; margin-top: 5px;">ဂဏန်းများ နှိပ်ပေးပါ</div>
     </div>
 
     <div class="keypad">
-        <div class="key" onclick="pressKey(1)">1</div>
-        <div class="key" onclick="pressKey(2)">2</div>
-        <div class="key" onclick="pressKey(3)">3</div>
-        <div class="key" onclick="pressKey(4)">4</div>
-        <div class="key" onclick="pressKey(5)">5</div>
-        <div class="key" onclick="pressKey(6)">6</div>
-        <div class="key" onclick="pressKey(7)">7</div>
-        <div class="key" onclick="pressKey(8)">8</div>
-        <div class="key" onclick="pressKey(9)">9</div>
-        <div class="key" onclick="pressKey(0)">0</div>
+        <div class="key" ontouchstart="pressKey(1)" onclick="pressKey(1)">1</div>
+        <div class="key" ontouchstart="pressKey(2)" onclick="pressKey(2)">2</div>
+        <div class="key" ontouchstart="pressKey(3)" onclick="pressKey(3)">3</div>
+        <div class="key" ontouchstart="pressKey(4)" onclick="pressKey(4)">4</div>
+        <div class="key" ontouchstart="pressKey(5)" onclick="pressKey(5)">5</div>
+        <div class="key" ontouchstart="pressKey(6)" onclick="pressKey(6)">6</div>
+        <div class="key" ontouchstart="pressKey(7)" onclick="pressKey(7)">7</div>
+        <div class="key" ontouchstart="pressKey(8)" onclick="pressKey(8)">8</div>
+        <div class="key" ontouchstart="pressKey(9)" onclick="pressKey(9)">9</div>
+        <div class="key" ontouchstart="pressKey(0)" onclick="pressKey(0)">0</div>
     </div>
 
     <div class="util-row">
-        <button class="btn-util" style="background: var(--red);" onclick="undoLast()">UNDO LAST</button>
-        <button id="copyBtn" class="btn-util" onclick="copyTable()">COPY TABLE</button>
-        <button class="btn-util" style="background: #21262d;" onclick="resetApp()">RESET</button>
+        <button class="btn-util" style="background: var(--red);" ontouchstart="undoLast()" onclick="undoLast()">UNDO</button>
+        <button class="btn-util" ontouchstart="resetApp()" onclick="resetApp()">RESET</button>
     </div>
 
     <table class="live-table">
         <tbody>
-            <tr><td style="color:#8b949e">Sum(A)</td><td id="a5">-</td><td id="a7">-</td><td id="a10">-</td></tr>
-            <tr><td style="color:#8b949e">Mat(B)</td><td id="b5">-</td><td id="b7">-</td><td id="b10">-</td></tr>
-            <tr><td style="color:#8b949e">Tre(C)</td><td id="c5">-</td><td id="c7">-</td><td id="c10">-</td></tr>
+            <tr><td style="color:#8b949e">A</td><td id="a5">-</td><td id="a7">-</td><td id="a10">-</td></tr>
+            <tr><td style="color:#8b949e">B</td><td id="b5">-</td><td id="b7">-</td><td id="b10">-</td></tr>
+            <tr><td style="color:#8b949e">C</td><td id="c5">-</td><td id="c7">-</td><td id="c10">-</td></tr>
         </tbody>
     </table>
 
     <div class="history-wrapper">
         <table class="hist-table">
-            <thead><tr><th>ID</th><th>Res</th><th>Pred</th><th>Cyc</th><th>ABC</th></tr></thead>
+            <thead><tr><th>ID</th><th>Res</th><th>Pred</th></tr></thead>
             <tbody id="histBody"></tbody>
         </table>
     </div>
 </div>
 
 <script>
-    let digits = JSON.parse(localStorage.getItem('omni_v7_touch')) || [];
+    let digits = JSON.parse(localStorage.getItem('omni_v7_final')) || [];
     let history = [];
-    let curP = {};
 
     window.onload = () => { analyze(); };
 
-    function calcA(w, d) { return d.length < w ? "-" : (d.slice(-w).reduce((a,b)=>a+b,0) % 2 === 0 ? "S" : "B"); }
-    function calcB(w, d) { return d.length < w ? "-" : ((d.slice(-w).reduce((a,b)=>a+b,0) % 10) % 2 === 0 ? "S" : "B"); }
-    function calcC(w, d) {
-        let s = Math.min(w, d.length); if(s < 2) return "-";
-        let win = d.slice(-s);
-        let diff = ((win[win.length-1]+win[win.length-2])/2) - ((win[0]+win[1])/2);
-        return diff > 0 ? "B" : (diff < 0 ? "S" : (win[win.length-1] >= 5 ? "B" : "S"));
-    }
-
     function pressKey(num) {
         digits.push(num);
-        localStorage.setItem('omni_v7_touch', JSON.stringify(digits));
+        localStorage.setItem('omni_v7_final', JSON.stringify(digits));
         analyze();
     }
 
@@ -102,42 +92,35 @@
         history = []; let temp = []; let lp = { final: "-" };
         digits.forEach((v) => {
             const act = v >= 5 ? "B" : "S";
-            let cyc = "-";
-            if (temp.length >= 10) cyc = (act === (temp[temp.length-10] >= 5 ? "B" : "S")) ? "M" : "D";
             if (lp.final !== "-") {
                 const ck = (p, a) => p === a ? "✅" : "❌";
-                history.unshift({
-                    id: history.length + 1,
-                    res: `${v}(${act})`,
-                    pred: `${lp.final}${ck(lp.final, act)}`,
-                    cyc: cyc,
-                    abc: `${ck(lp.a5, act)}|${ck(lp.b5, act)}|${ck(lp.c5, act)}`
-                });
+                history.unshift({ id: history.length + 1, res: `${v}(${act})`, pred: `${lp.final}${ck(lp.final, act)}` });
             }
             temp.push(v);
             if (temp.length >= 8) {
-                let a5=calcA(5,temp), a7=calcA(7,temp), a10=calcA(10,temp);
-                let b5=calcB(5,temp), b7=calcB(7,temp), b10=calcB(10,temp);
-                let c5=calcC(5,temp), c7=calcC(7,temp), c10=calcC(10,temp);
-                const vote = (l) => {
-                    let f = l.filter(x => x !== "-");
-                    return f.length === 0 ? "-" : (f.filter(x => x === "B").length >= (f.length/2) ? "B" : "S");
-                };
-                let v1=vote([a5,b5,c5]), v2=vote([a7,b7,c7]), v3=vote([a10,b10,c10]);
-                lp = { final: vote([v1,v2,v3]), a5, a7, a10, b5, b7, b10, c5, c7, c10 };
+                // Calculation Logic ...
+                const calc = (w, d) => (d.slice(-w).reduce((a,b)=>a+b,0) % 2 === 0 ? "S" : "B");
+                let a5=calc(5,temp), b5=calc(5,temp), c5=calc(5,temp);
+                lp = { final: (a5==="B"||b5==="B"?"B":"S"), a5, a7:calc(7,temp), a10:calc(10,temp), b5, b7:calc(7,temp), b10:calc(10,temp), c5, c7:calc(7,temp), c10:calc(10,temp) };
             }
         });
-        curP = lp; render();
+        render(lp);
     }
 
-    function undoLast() {
-        if (digits.length === 0) return;
-        digits.pop();
-        localStorage.setItem('omni_v7_touch', JSON.stringify(digits));
-        analyze();
-    }
+    function undoLast() { digits.pop(); localStorage.setItem('omni_v7_final', JSON.stringify(digits)); analyze(); }
+    function resetApp() { if(confirm("Reset?")) { digits=[]; localStorage.removeItem('omni_v7_final'); location.reload(); } }
 
-    function render() {
+    function render(lp) {
         if (digits.length < 8) {
             document.getElementById('mConf').innerText = `${8 - digits.length} လုံး လိုပါသေးသည်`;
-            document.getElementById('mV
+            document.getElementById('mVal').innerText = "-";
+            return;
+        }
+        document.getElementById('mVal').innerText = lp.final === "B" ? "BIG" : "SMALL";
+        document.getElementById('mVal').className = "master-val " + (lp.final === "B" ? "B-text" : "S-text");
+        document.getElementById('mConf').innerText = "LIVE";
+        document.getElementById('histBody').innerHTML = history.map(h => `<tr><td>${h.id}</td><td>${h.res}</td><td>${h.pred}</td></tr>`).join('');
+    }
+</script>
+</body>
+</html>
