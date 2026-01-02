@@ -3,43 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OMNI V7 - iPad Touch Fix</title>
+    <title>OMNI V7 - iPad Pro Version</title>
     <style>
-        :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --blue: #58a6ff; --green: #238636; --red: #f85149; --gold: #d29922; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 8px; margin: 0; -webkit-tap-highlight-color: transparent; }
-        .container { max-width: 450px; margin: auto; }
-        .master-box { background: #1c2128; border: 2px solid var(--border); border-radius: 10px; padding: 15px; text-align: center; margin-bottom: 8px; }
-        .master-val { font-size: 42px; font-weight: bold; margin: 0; }
+        :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --blue: #58a6ff; --green: #238636; --red: #f85149; --gold: #d29922; --btn-bg: #21262d; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; -webkit-tap-highlight-color: transparent; }
+        .container { max-width: 500px; margin: auto; }
         
-        /* Keypad Styling */
-        .keypad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 10px; padding: 5px; }
-        .key { 
-            background: #21262d; border: 1px solid var(--border); color: white; 
-            padding: 20px 0; border-radius: 10px; font-size: 24px; font-weight: bold; 
-            text-align: center; cursor: pointer; touch-action: manipulation;
-        }
+        /* Top Action Buttons */
+        .top-nav { display: flex; gap: 8px; margin-bottom: 10px; }
+        .btn-nav { flex: 1; padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--btn-bg); color: var(--blue); font-size: 12px; font-weight: bold; cursor: pointer; }
+
+        .master-box { background: #1c2128; border: 2px solid var(--border); border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 10px; }
+        .master-val { font-size: 48px; font-weight: 900; margin: 0; letter-spacing: 2px; }
+        .status-text { font-size: 12px; color: #8b949e; margin-top: 5px; text-transform: uppercase; }
+
+        /* Keypad Section */
+        .keypad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 10px; }
+        .key { background: var(--btn-bg); border: 1px solid var(--border); color: white; padding: 22px 0; border-radius: 10px; font-size: 22px; font-weight: bold; text-align: center; cursor: pointer; touch-action: manipulation; }
         .key:active { background: var(--blue); transform: scale(0.95); }
-        
-        .util-row { display: flex; gap: 8px; margin-bottom: 10px; }
-        .btn-util { flex: 1; padding: 15px; background: #30363d; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: bold; }
 
-        .live-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; background: var(--card); border: 1px solid var(--border); }
-        .live-table td { padding: 12px; text-align: center; border: 1px solid var(--border); font-weight: bold; }
+        .action-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .btn-main { flex: 1; padding: 15px; border-radius: 8px; border: none; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .btn-copy { background: #30363d; color: white; }
+        .btn-reset { background: #21262d; color: var(--red); }
+        .btn-undo { background: var(--red); color: white; width: 80px; }
 
-        .history-wrapper { border-radius: 8px; border: 1px solid var(--border); background: var(--card); max-height: 250px; overflow-y: auto; }
-        table.hist-table { width: 100%; border-collapse: collapse; }
-        .hist-table th { background: #21262d; padding: 10px; font-size: 11px; position: sticky; top: 0; }
-        .hist-table td { padding: 12px; border-bottom: 1px solid var(--border); text-align: center; }
+        /* Tables */
+        .abc-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+        .abc-table td { padding: 12px; text-align: center; border: 1px solid var(--border); font-weight: bold; font-size: 15px; }
+        .label { color: #8b949e; font-size: 13px; font-weight: normal; background: #1c2128; }
+
+        .history-wrapper { border-radius: 10px; border: 1px solid var(--border); background: var(--card); max-height: 350px; overflow-y: auto; }
+        table.main-table { width: 100%; border-collapse: collapse; }
+        .main-table th { background: #21262d; padding: 12px; font-size: 11px; color: #8b949e; position: sticky; top: 0; border-bottom: 2px solid var(--border); }
+        .main-table td { padding: 12px; border-bottom: 1px solid var(--border); text-align: center; font-size: 14px; }
         
         .B-text { color: var(--blue); } .S-text { color: var(--green); }
+        .match-icon { color: var(--green); font-weight: bold; }
+        .miss-icon { color: var(--red); font-weight: bold; }
+        .abc-icons { font-size: 12px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="top-nav">
+        <button class="btn-nav" onclick="saveData()">💾 SAVE DIGITS</button>
+        <button class="btn-nav" onclick="loadData()">📂 LOAD DIGITS</button>
+    </div>
+
     <div class="master-box">
         <div id="mVal" class="master-val">-</div>
-        <div id="mConf" style="font-size: 13px; color: #8b949e; margin-top: 5px;">ဂဏန်းများ နှိပ်ပေးပါ</div>
+        <div id="mStatus" class="status-text">Waiting for data</div>
     </div>
 
     <div class="keypad">
@@ -55,72 +70,59 @@
         <div class="key" ontouchstart="pressKey(0)" onclick="pressKey(0)">0</div>
     </div>
 
-    <div class="util-row">
-        <button class="btn-util" style="background: var(--red);" ontouchstart="undoLast()" onclick="undoLast()">UNDO</button>
-        <button class="btn-util" ontouchstart="resetApp()" onclick="resetApp()">RESET</button>
+    <div class="action-row">
+        <button class="btn-main btn-undo" ontouchstart="undo()" onclick="undo()">UNDO</button>
+        <button class="btn-main btn-copy" onclick="copyTable()">COPY TABLE</button>
+        <button class="btn-main btn-reset" onclick="resetApp()">RESET</button>
     </div>
 
-    <table class="live-table">
-        <tbody>
-            <tr><td style="color:#8b949e">A</td><td id="a5">-</td><td id="a7">-</td><td id="a10">-</td></tr>
-            <tr><td style="color:#8b949e">B</td><td id="b5">-</td><td id="b7">-</td><td id="b10">-</td></tr>
-            <tr><td style="color:#8b949e">C</td><td id="c5">-</td><td id="c7">-</td><td id="c10">-</td></tr>
+    <table class="abc-table">
+        <tbody id="abcBody">
+            <tr><td class="label">Sum(A)</td><td id="a5">-</td><td id="a7">-</td><td id="a10">-</td></tr>
+            <tr><td class="label">Mat(B)</td><td id="b5">-</td><td id="b7">-</td><td id="b10">-</td></tr>
+            <tr><td class="label">Tre(C)</td><td id="c5">-</td><td id="c7">-</td><td id="c10">-</td></tr>
         </tbody>
     </table>
 
     <div class="history-wrapper">
-        <table class="hist-table">
-            <thead><tr><th>ID</th><th>Res</th><th>Pred</th></tr></thead>
+        <table class="main-table">
+            <thead>
+                <tr><th>ID</th><th>RES</th><th>PRED</th><th>CYC</th><th>ABC</th></tr>
+            </thead>
             <tbody id="histBody"></tbody>
         </table>
     </div>
 </div>
 
 <script>
-    let digits = JSON.parse(localStorage.getItem('omni_v7_final')) || [];
+    let digits = JSON.parse(localStorage.getItem('omni_v7_pro')) || [];
     let history = [];
 
-    window.onload = () => { analyze(); };
+    window.onload = () => analyze();
 
-    function pressKey(num) {
-        digits.push(num);
-        localStorage.setItem('omni_v7_final', JSON.stringify(digits));
-        analyze();
-    }
+    function pressKey(n) { digits.push(n); update(); }
+    function undo() { digits.pop(); update(); }
+    function update() { localStorage.setItem('omni_v7_pro', JSON.stringify(digits)); analyze(); }
+
+    const getA = (w, d) => d.length < w ? "-" : (d.slice(-w).reduce((a,b)=>a+b,0) % 2 === 0 ? "S" : "B");
+    const getB = (w, d) => d.length < w ? "-" : ((d.slice(-w).reduce((a,b)=>a+b,0) % 10) % 2 === 0 ? "S" : "B");
+    const getC = (w, d) => {
+        if(d.length < w) return "-";
+        let win = d.slice(-w);
+        let diff = win[win.length-1] - win[0];
+        return diff > 0 ? "B" : (diff < 0 ? "S" : (win[win.length-1] >= 5 ? "B" : "S"));
+    };
 
     function analyze() {
         history = []; let temp = []; let lp = { final: "-" };
-        digits.forEach((v) => {
+        digits.forEach((v, i) => {
             const act = v >= 5 ? "B" : "S";
+            let cyc = "-";
+            if (temp.length >= 10) cyc = (act === (temp[temp.length-10] >= 5 ? "B" : "S")) ? "M" : "D";
+            
             if (lp.final !== "-") {
                 const ck = (p, a) => p === a ? "✅" : "❌";
-                history.unshift({ id: history.length + 1, res: `${v}(${act})`, pred: `${lp.final}${ck(lp.final, act)}` });
-            }
-            temp.push(v);
-            if (temp.length >= 8) {
-                // Calculation Logic ...
-                const calc = (w, d) => (d.slice(-w).reduce((a,b)=>a+b,0) % 2 === 0 ? "S" : "B");
-                let a5=calc(5,temp), b5=calc(5,temp), c5=calc(5,temp);
-                lp = { final: (a5==="B"||b5==="B"?"B":"S"), a5, a7:calc(7,temp), a10:calc(10,temp), b5, b7:calc(7,temp), b10:calc(10,temp), c5, c7:calc(7,temp), c10:calc(10,temp) };
-            }
-        });
-        render(lp);
-    }
-
-    function undoLast() { digits.pop(); localStorage.setItem('omni_v7_final', JSON.stringify(digits)); analyze(); }
-    function resetApp() { if(confirm("Reset?")) { digits=[]; localStorage.removeItem('omni_v7_final'); location.reload(); } }
-
-    function render(lp) {
-        if (digits.length < 8) {
-            document.getElementById('mConf').innerText = `${8 - digits.length} လုံး လိုပါသေးသည်`;
-            document.getElementById('mVal').innerText = "-";
-            return;
-        }
-        document.getElementById('mVal').innerText = lp.final === "B" ? "BIG" : "SMALL";
-        document.getElementById('mVal').className = "master-val " + (lp.final === "B" ? "B-text" : "S-text");
-        document.getElementById('mConf').innerText = "LIVE";
-        document.getElementById('histBody').innerHTML = history.map(h => `<tr><td>${h.id}</td><td>${h.res}</td><td>${h.pred}</td></tr>`).join('');
-    }
-</script>
-</body>
-</html>
+                const abc_checks = `<span class="abc-icons">${ck(lp.a5, act)}|${ck(lp.b5, act)}|${ck(lp.c5, act)}</span>`;
+                history.unshift({
+                    id: history.length + 1,
+                    res: `<b>${v}
