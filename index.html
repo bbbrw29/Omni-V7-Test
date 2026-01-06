@@ -1,144 +1,76 @@
 <!DOCTYPE html>
-<html lang="my">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OMNI V7 Pro - iPad Stable</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B/S Master Predictor - Full Data</title>
     <style>
-        :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --blue: #58a6ff; --green: #238636; --red: #f85149; --gold: #d29922; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; -webkit-user-select: none; user-select: none; }
-        .container { max-width: 480px; margin: auto; }
-        
-        .master-box { background: #1c2128; border: 2px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 10px; }
-        .master-val { font-size: 48px; font-weight: 900; margin: 0; }
-        
-        /* iPad နှိပ်ရလွယ်စေရန် Keypad ကို အထူးပြင်ဆင်ခြင်း */
-        .keypad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 12px; }
-        .key { 
-            background: #21262d; border: 1px solid var(--border); color: white; 
-            padding: 25px 0; border-radius: 12px; font-size: 26px; font-weight: bold; 
-            text-align: center; cursor: pointer; touch-action: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .key:active { background: var(--blue); transform: scale(0.9); }
-
-        .action-row { display: flex; gap: 8px; margin-bottom: 10px; }
-        .btn { flex: 1; padding: 15px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; color: white; }
-
-        .abc-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-        .abc-table td { padding: 12px; text-align: center; border: 1px solid var(--border); font-weight: bold; }
-        .label { color: #8b949e; background: #1c2128; font-size: 13px; }
-
-        .history-wrapper { border-radius: 10px; border: 1px solid var(--border); background: var(--card); max-height: 300px; overflow-y: auto; }
-        table.main-table { width: 100%; border-collapse: collapse; }
-        .main-table th { background: #21262d; padding: 12px; font-size: 11px; position: sticky; top: 0; }
-        .main-table td { padding: 12px; border-bottom: 1px solid var(--border); text-align: center; font-size: 14px; }
-        
-        .B-text { color: var(--blue); } .S-text { color: var(--green); }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f0c29; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .app-card { background: #302b63; padding: 35px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); text-align: center; width: 380px; border: 1px solid #24243e; }
+        h1 { color: #00d2ff; font-size: 24px; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
+        .input-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
+        input { width: 80px; height: 80px; font-size: 38px; text-align: center; border-radius: 15px; border: none; background: #24243e; color: #ff0055; font-weight: bold; box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); }
+        button { width: 100%; padding: 18px; background: linear-gradient(to right, #00d2ff, #3a7bd5); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        #result-display { margin-top: 30px; padding: 25px; background: #24243e; border-radius: 20px; min-height: 140px; }
+        .pattern-text { font-size: 45px; font-weight: bold; letter-spacing: 10px; color: #fff; margin-bottom: 10px; }
+        .banker { color: #00d2ff; text-decoration: underline; text-underline-offset: 10px; }
+        .status { color: #f1c40f; font-size: 14px; margin-top: 15px; border-top: 1px solid #444; padding-top: 10px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="master-box">
-        <div id="mVal" class="master-val">-</div>
-        <div id="mStatus" style="font-size: 12px; color: #8b949e;">READY</div>
+<div class="app-card">
+    <h1>B/S Pattern Trigger</h1>
+    <div class="input-row">
+        <input type="number" id="in1" placeholder="0" oninput="if(value.length>1)value=value.slice(0,1)">
+        <input type="number" id="in2" placeholder="0" oninput="if(value.length>1)value=value.slice(0,1)">
     </div>
+    <button onclick="startTrigger()">Predict Now (Enter)</button>
 
-    <div class="keypad">
-        <div class="key" onpointerdown="pressKey(1)">1</div>
-        <div class="key" onpointerdown="pressKey(2)">2</div>
-        <div class="key" onpointerdown="pressKey(3)">3</div>
-        <div class="key" onpointerdown="pressKey(4)">4</div>
-        <div class="key" onpointerdown="pressKey(5)">5</div>
-        <div class="key" onpointerdown="pressKey(6)">6</div>
-        <div class="key" onpointerdown="pressKey(7)">7</div>
-        <div class="key" onpointerdown="pressKey(8)">8</div>
-        <div class="key" onpointerdown="pressKey(9)">9</div>
-        <div class="key" onpointerdown="pressKey(0)">0</div>
-    </div>
-
-    <div class="action-row">
-        <button class="btn" style="background:var(--red)" onpointerdown="undo()">UNDO</button>
-        <button class="btn" style="background:#30363d" onclick="resetApp()">RESET</button>
-    </div>
-
-    <table class="abc-table">
-        <tbody>
-            <tr><td class="label">Sum(A)</td><td id="a5">-</td><td id="a7">-</td><td id="a10">-</td></tr>
-            <tr><td class="label">Mat(B)</td><td id="b5">-</td><td id="b7">-</td><td id="b10">-</td></tr>
-            <tr><td class="label">Tre(C)</td><td id="c5">-</td><td id="c7">-</td><td id="c10">-</td></tr>
-        </tbody>
-    </table>
-
-    <div class="history-wrapper">
-        <table class="main-table">
-            <thead><tr><th>ID</th><th>RESULT</th><th>PRED</th><th>ABC</th></tr></thead>
-            <tbody id="histBody"></tbody>
-        </table>
+    <div id="result-display">
+        <div id="pattern-out" class="pattern-text">---</div>
+        <div id="recommendation-out" class="status">ဂဏန်း (၂) လုံးရိုက်ထည့်ပါ</div>
     </div>
 </div>
 
 <script>
-    let digits = JSON.parse(localStorage.getItem('omni_v7_ipad_stable')) || [];
-    let history = [];
-
-    window.onload = () => analyze();
-
-    function pressKey(n) { digits.push(n); update(); }
-    function undo() { digits.pop(); update(); }
-    function update() { localStorage.setItem('omni_v7_ipad_stable', JSON.stringify(digits)); analyze(); }
-
-    const getA = (w, d) => d.length < w ? "-" : (d.slice(-w).reduce((a,b)=>a+b,0) % 2 === 0 ? "S" : "B");
-    const getB = (w, d) => d.length < w ? "-" : ((d.slice(-w).reduce((a,b)=>a+b,0) % 10) % 2 === 0 ? "S" : "B");
-    const getC = (w, d) => {
-        if(d.length < w) return "-";
-        let win = d.slice(-w);
-        return (win[win.length-1] - win[0]) >= 0 ? "B" : "S";
+    // အစ်ကို့ရဲ့ Analysis Data အလုံး ၁၀၀ အပြည့်အစုံ
+    const masterData = {
+        "0.0":"SSBBSB", "0.1":"SBBSBS", "0.2":"SSSSSB", "0.3":"SBBSBB", "0.4":"SBBBSS", "0.5":"BSSSBB", "0.6":"SBBSBS", "0.7":"SSBBBB", "0.8":"BSSBBB", "0.9":"BBSSSB",
+        "1.0":"BBSSSB", "1.1":"SSBSSS", "1.2":"SBSSSB", "1.3":"SSSBSS", "1.4":"BSBSSB", "1.5":"BBBSSB", "1.6":"SBBBSB", "1.7":"BBBBBS", "1.8":"BBBSBS", "1.9":"BSSSBB",
+        "2.0":"SBSBBB", "2.1":"BBBBSS", "2.2":"BSBSSS", "2.3":"BSBSSB", "2.4":"BSSSBS", "2.5":"SBBBBS", "2.6":"BBSBSB", "2.7":"BSBSBB", "2.8":"BSBBBS", "2.9":"SBBBSS",
+        "3.0":"SSBBSB", "3.1":"SSBSSB", "3.2":"SSBSBB", "3.3":"BSSSSS", "3.4":"BBBBBB", "3.5":"BBSSBS", "3.6":"SBBSBS", "3.7":"SSSSSB", "3.8":"SSBSBB", "3.9":"BSBBBS",
+        "4.0":"BSBBSS", "4.1":"BBBBBS", "4.2":"BBBSBS", "4.3":"SSSSSB", "4.4":"SBSSBS", "4.5":"SBSSBB", "4.6":"BBBSSS", "4.7":"SBBSBB", "4.8":"SSBSBS", "4.9":"SBBSBS",
+        "5.0":"BSSBBB", "5.1":"SBSBSS", "5.2":"SBBBBB", "5.3":"SBSSSS", "5.4":"BSBBSB", "5.5":"BBBBSS", "5.6":"BBBSBB", "5.7":"BBSSBB", "5.8":"SBSBBS", "5.9":"SBSBSS",
+        "6.0":"BBBSBS", "6.1":"BBBSBS", "6.2":"SBBSBS", "6.3":"SBSBBS", "6.4":"SBBSBS", "6.5":"BBBSBB", "6.6":"SSBBSB", "6.7":"SBBBSB", "6.8":"SBBBSB", "6.9":"BBSSSB",
+        "7.0":"SSSSBS", "7.1":"BSBBBS", "7.2":"SBBBBS", "7.3":"BBBSBB", "7.4":"BBBSBS", "7.5":"SSBSBS", "7.6":"BSSBBS", "7.7":"SSSBBS", "7.8":"BSBBBS", "7.9":"BBBSBS",
+        "8.0":"BBSSBB", "8.1":"BSBSSS", "8.2":"SSBSBB", "8.3":"BBBSBS", "8.4":"BSBBSB", "8.5":"SSBSSS", "8.6":"BBBSBS", "8.7":"SBSBSB", "8.8":"SBBSBS", "8.9":"BSBSBB",
+        "9.0":"BBBSBS", "9.1":"SBSSBB", "9.2":"BSSSBS", "9.3":"SBSSBS", "9.4":"SSBSBB", "9.5":"SBSBSB", "9.6":"BSBBSS", "9.7":"SSBSBS", "9.8":"SBBBSS", "9.9":"BSSSBS"
     };
 
-    function analyze() {
-        history = []; let temp = []; let lp = { final: "-" };
-        digits.forEach((v) => {
-            const act = v >= 5 ? "B" : "S";
-            if (lp.final !== "-") {
-                const ck = (p, a) => p === a ? "✅" : "❌";
-                history.unshift({
-                    id: history.length + 1,
-                    res: `<b>${v}(${act})</b>`,
-                    pred: `${lp.final}${ck(lp.final, act)}`,
-                    abc: `${ck(lp.a5, act)}|${ck(lp.b5, act)}|${ck(lp.c5, act)}`
-                });
-            }
-            temp.push(v);
-            if (temp.length >= 8) {
-                lp = { 
-                    a5: getA(5,temp), a7: getA(7,temp), a10: getA(10,temp),
-                    b5: getB(5,temp), b7: getB(7,temp), b10: getB(10,temp),
-                    c5: getC(5,temp), c7: getC(7,temp), c10: getC(10,temp)
-                };
-                lp.final = (lp.a5 === "B" || lp.b5 === "B") ? "B" : "S";
-            }
-        });
-        render(lp);
-    }
+    function startTrigger() {
+        const d1 = document.getElementById('in1').value;
+        const d2 = document.getElementById('in2').value;
+        if(d1 === "" || d2 === "") return;
 
-    function render(lp) {
-        if (digits.length < 8) {
-            document.getElementById('mVal').innerText = "-";
-            document.getElementById('mStatus').innerText = `${8-digits.length} digits needed`;
-        } else {
-            document.getElementById('mVal').innerText = lp.final === "B" ? "BIG" : "SMALL";
-            document.getElementById('mVal').className = "master-val " + lp.final + "-text";
-            ['a5','a7','a10','b5','b7','b10','c5','c7','c10'].forEach(id => {
-                document.getElementById(id).innerText = lp[id];
-                document.getElementById(id).className = lp[id] + "-text";
-            });
+        const key = d1 + "." + d2;
+        const result = masterData[key];
+        const out = document.getElementById('pattern-out');
+        const advice = document.getElementById('recommendation-out');
+
+        if(result) {
+            // Banker Position Logic (အစ်ကို့ဒေတာအရ နေရာသတ်မှတ်ခြင်း)
+            let p = result.split("");
+            let bankerIndex = (parseInt(d1) + parseInt(d2)) % 6; // Logic example
+            p[bankerIndex] = `<span class="banker">${p[bankerIndex]}</span>`;
+            
+            out.innerHTML = p.join("");
+            advice.innerHTML = "🎯 Analysis Result for Category " + key;
         }
-        document.getElementById('histBody').innerHTML = history.map(h => `<tr><td>${h.id}</td><td>${h.res}</td><td>${h.pred}</td><td>${h.abc}</td></tr>`).join('');
     }
 
-    function resetApp() { if(confirm("Reset?")) { digits=[]; update(); location.reload(); } }
+    document.addEventListener('keypress', (e) => { if(e.key === 'Enter') startTrigger(); });
 </script>
+
 </body>
 </html>
