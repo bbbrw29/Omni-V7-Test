@@ -1,144 +1,276 @@
 <!DOCTYPE html>
 <html lang="my">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OMNI V7 Pro - iPad Stable</title>
-    <style>
-        :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --blue: #58a6ff; --green: #238636; --red: #f85149; --gold: #d29922; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; -webkit-user-select: none; user-select: none; }
-        .container { max-width: 480px; margin: auto; }
-        
-        .master-box { background: #1c2128; border: 2px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 10px; }
-        .master-val { font-size: 48px; font-weight: 900; margin: 0; }
-        
-        /* iPad နှိပ်ရလွယ်စေရန် Keypad ကို အထူးပြင်ဆင်ခြင်း */
-        .keypad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 12px; }
-        .key { 
-            background: #21262d; border: 1px solid var(--border); color: white; 
-            padding: 25px 0; border-radius: 12px; font-size: 26px; font-weight: bold; 
-            text-align: center; cursor: pointer; touch-action: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .key:active { background: var(--blue); transform: scale(0.9); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VIP PATTERN PRO - GLOW EDITION</title>
+<style>
+:root { 
+    --bg: #0d1117; --card: #161b22; --border: #30363d; 
+    --text: #c9d1d9; --blue: #58a6ff; --gold: #d29922; 
+    --green: #238636; --red: #f85149; 
+}
 
-        .action-row { display: flex; gap: 8px; margin-bottom: 10px; }
-        .btn { flex: 1; padding: 15px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; color: white; }
+body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; overflow-x: hidden; }
+.container { max-width: 420px; margin: auto; }
+.panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
 
-        .abc-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-        .abc-table td { padding: 12px; text-align: center; border: 1px solid var(--border); font-weight: bold; }
-        .label { color: #8b949e; background: #1c2128; font-size: 13px; }
+h4 { margin: 0 0 10px 0; color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 5px; font-size: 11px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
 
-        .history-wrapper { border-radius: 10px; border: 1px solid var(--border); background: var(--card); max-height: 300px; overflow-y: auto; }
-        table.main-table { width: 100%; border-collapse: collapse; }
-        .main-table th { background: #21262d; padding: 12px; font-size: 11px; position: sticky; top: 0; }
-        .main-table td { padding: 12px; border-bottom: 1px solid var(--border); text-align: center; font-size: 14px; }
-        
-        .B-text { color: var(--blue); } .S-text { color: var(--green); }
-    </style>
+/* Prediction Box */
+.pred-box { text-align: center; background: #000; border: 2px solid var(--gold); padding: 15px; border-radius: 15px; position: relative; overflow: hidden; }
+.pred-val { font-size: 65px; font-weight: bold; color: var(--blue); line-height: 1; margin: 10px 0; transition: all 0.3s; }
+
+/* Step Grid */
+.step-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; margin-top: 10px; }
+.step-box { 
+    height: 35px; border: 1px solid #444; border-radius: 8px; 
+    display: flex; align-items: center; justify-content: center; 
+    font-size: 12px; background: #222; position: relative; transition: 0.3s;
+}
+
+/* --- GLOW RIPPLE ANIMATION (၃) --- */
+@keyframes ripple-gold {
+    0% { box-shadow: 0 0 0 0 rgba(210, 153, 34, 0.7); transform: scale(1); }
+    50% { box-shadow: 0 0 20px 10px rgba(210, 153, 34, 0); transform: scale(1.1); }
+    100% { box-shadow: 0 0 0 0 rgba(210, 153, 34, 0); transform: scale(1); }
+}
+
+.hit-glow { 
+    animation: ripple-gold 0.6s ease-out; 
+    background: var(--green) !important; 
+    border-color: var(--gold) !important;
+    z-index: 10;
+}
+
+/* လက်ရှိရောက်နေတဲ့ Step Highlight */
+.active-step { border: 2px solid var(--gold) !important; background: #332b00 !important; }
+
+.hit { background: var(--green) !important; border: none; color: white; }
+.miss { background: var(--red) !important; border: none; color: white; }
+
+/* Specific History Section */
+.spec-history { background: #0a0e14; padding: 10px; border-radius: 8px; margin-top: 5px; border: 1px solid #222; }
+.spec-item { font-size: 11px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #1c2128; padding-bottom: 5px; }
+.spec-res-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px; flex: 1; }
+.spec-dot { height: 18px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 9px; background: #1a1a1a; }
+.sync-highlight { background: #444; outline: 1.5px solid var(--gold); }
+
+/* Input Pad */
+.numpad-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
+.num-btn { height: 50px; background: #21262d; border: 1px solid var(--border); color: #fff; border-radius: 10px; font-size: 20px; font-weight: bold; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.num-btn:active { background: var(--blue); transform: scale(0.9); }
+
+/* Live Items */
+.live-item { display: flex; justify-content: space-between; align-items: center; background: #1c2128; padding: 8px 12px; border-radius: 8px; margin-bottom: 5px; border-left: 4px solid var(--blue); }
+.dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-left: 3px; }
+
+.table-wrap { overflow-y: auto; max-height: 180px; background: #000; border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+td { padding: 10px 5px; border-bottom: 1px solid var(--border); text-align: center; }
+
+.reset-btn { background: var(--red); color: white; border: none; padding: 8px 15px; border-radius: 8px; font-size: 10px; cursor: pointer; font-weight: bold; }
+
+#copyModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; padding: 20px; box-sizing: border-box; }
+.modal-content { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid var(--gold); }
+textarea { width: 100%; height: 150px; background: #000; color: #00ff00; border: 1px solid #444; margin: 10px 0; font-family: monospace; padding: 10px; box-sizing: border-box; }
+</style>
 </head>
 <body>
 
 <div class="container">
-    <div class="master-box">
-        <div id="mVal" class="master-val">-</div>
-        <div id="mStatus" style="font-size: 12px; color: #8b949e;">READY</div>
+    <div class="panel pred-box" id="mainPredBox">
+        <div style="font-size:11px; color:var(--gold); font-weight:bold; letter-spacing:1px;">LOCKED PREDICTION</div>
+        <div id="predDisplay" class="pred-val">-</div>
+        <div id="statusLabel" style="font-size:11px; color:#888; font-weight: bold;">WAITING...</div>
+        
+        <div class="step-grid" id="lockedSteps">
+            <script>for(let i=0;i<8;i++) document.write('<div class="step-box" id="step-'+i+'">'+(i+1)+'</div>');</script>
+        </div>
+
+        <div id="specSection" style="margin-top: 15px; text-align: left; display: none;">
+            <div style="font-size: 10px; color: var(--gold); margin-bottom: 8px; font-weight: bold; border-top: 1px solid #333; padding-top: 10px; display: flex; justify-content: space-between;">
+                <span>PREVIOUS <span id="specTitle"></span> RECORDS</span>
+                <span style="color:#555">SYNC ACTIVE</span>
+            </div>
+            <div id="specList" class="spec-history"></div>
+        </div>
     </div>
 
-    <div class="keypad">
-        <div class="key" onpointerdown="pressKey(1)">1</div>
-        <div class="key" onpointerdown="pressKey(2)">2</div>
-        <div class="key" onpointerdown="pressKey(3)">3</div>
-        <div class="key" onpointerdown="pressKey(4)">4</div>
-        <div class="key" onpointerdown="pressKey(5)">5</div>
-        <div class="key" onpointerdown="pressKey(6)">6</div>
-        <div class="key" onpointerdown="pressKey(7)">7</div>
-        <div class="key" onpointerdown="pressKey(8)">8</div>
-        <div class="key" onpointerdown="pressKey(9)">9</div>
-        <div class="key" onpointerdown="pressKey(0)">0</div>
+    <div class="panel">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h4 style="border:none; margin:0;">INPUT RESULT</h4>
+            <button class="reset-btn" onclick="resetData()">RESET ALL</button>
+        </div>
+        <div class="numpad-grid">
+            <script>for(let i=0;i<=9;i++) document.write(`<button class="num-btn" onclick="handleInput(${i})">${i}</button>`);</script>
+        </div>
     </div>
 
-    <div class="action-row">
-        <button class="btn" style="background:var(--red)" onpointerdown="undo()">UNDO</button>
-        <button class="btn" style="background:#30363d" onclick="resetApp()">RESET</button>
+    <div class="panel">
+        <h4>LIVE TRACKING</h4>
+        <div id="liveMonitor"></div>
     </div>
 
-    <table class="abc-table">
-        <tbody>
-            <tr><td class="label">Sum(A)</td><td id="a5">-</td><td id="a7">-</td><td id="a10">-</td></tr>
-            <tr><td class="label">Mat(B)</td><td id="b5">-</td><td id="b7">-</td><td id="b10">-</td></tr>
-            <tr><td class="label">Tre(C)</td><td id="c5">-</td><td id="c7">-</td><td id="c10">-</td></tr>
-        </tbody>
-    </table>
+    <div class="panel">
+        <h4>
+            <span>HISTORY LOG</span>
+            <button onclick="openCopyModal()" style="background:var(--green); color:white; border:none; padding:6px 12px; border-radius:6px; font-size:10px;">COPY DATA</button>
+        </h4>
+        <div class="table-wrap">
+            <table><tbody id="historyBody"></tbody></table>
+        </div>
+    </div>
+</div>
 
-    <div class="history-wrapper">
-        <table class="main-table">
-            <thead><tr><th>ID</th><th>RESULT</th><th>PRED</th><th>ABC</th></tr></thead>
-            <tbody id="histBody"></tbody>
-        </table>
+<div id="copyModal">
+    <div class="modal-content">
+        <h4 style="color:var(--gold); justify-content:center;">EXCEL EXPORT</h4>
+        <button onclick="generateCopy('normal')" style="width:100%; padding:12px; margin-bottom:5px; background:var(--blue); color:white; border:none; border-radius:5px;">COPY NORMAL</button>
+        <button onclick="generateCopy('sorted')" style="width:100%; padding:12px; background:var(--gold); border:none; border-radius:5px;">COPY SORTED</button>
+        <textarea id="copyArea" readonly></textarea>
+        <div style="display:flex; gap:10px;">
+            <button onclick="doClipboardCopy()" style="flex:1; background:var(--green); color:white; border:none; padding:12px; border-radius:5px;">COPY NOW</button>
+            <button onclick="document.getElementById('copyModal').style.display='none'" style="flex:1; background:var(--red); color:white; border:none; padding:12px; border-radius:5px;">CLOSE</button>
+        </div>
     </div>
 </div>
 
 <script>
-    let digits = JSON.parse(localStorage.getItem('omni_v7_ipad_stable')) || [];
-    let history = [];
+const myPatterns = {
+    even: { 0:"BBBSSBBB", 1:"SBSSBBBB", 2:"BBBSSSSS", 3:"SBBBBSSB", 4:"BBBBSSBB", 5:"BBBSSSBB", 6:"BBBSSSBB", 7:"SBBSSBBS", 8:"BBBSSBBB", 9:"BBBSSBBB" },
+    odd: { 0:"SBBSSBSS", 1:"BBBSSBBS", 2:"BBBBSSSB", 3:"BBBBSSBS", 4:"BBBBSSBS", 5:"BSBBSSBS", 6:"BBBSSBBS", 7:"BBBSSBBB", 8:"BBBSSBBB", 9:"BBBBSSBB" }
+};
 
-    window.onload = () => analyze();
+let rawInputs = JSON.parse(localStorage.getItem('rawInputs')) || [];
+let activeTracks = JSON.parse(localStorage.getItem('activeTracks')) || [];
+let historyLog = JSON.parse(localStorage.getItem('historyLog')) || [];
+let lockedTrackId = localStorage.getItem('lockedTrackId') || null;
 
-    function pressKey(n) { digits.push(n); update(); }
-    function undo() { digits.pop(); update(); }
-    function update() { localStorage.setItem('omni_v7_ipad_stable', JSON.stringify(digits)); analyze(); }
+function saveData() {
+    localStorage.setItem('rawInputs', JSON.stringify(rawInputs));
+    localStorage.setItem('activeTracks', JSON.stringify(activeTracks));
+    localStorage.setItem('historyLog', JSON.stringify(historyLog));
+    if (lockedTrackId) localStorage.setItem('lockedTrackId', lockedTrackId);
+    else localStorage.removeItem('lockedTrackId');
+}
 
-    const getA = (w, d) => d.length < w ? "-" : (d.slice(-w).reduce((a,b)=>a+b,0) % 2 === 0 ? "S" : "B");
-    const getB = (w, d) => d.length < w ? "-" : ((d.slice(-w).reduce((a,b)=>a+b,0) % 10) % 2 === 0 ? "S" : "B");
-    const getC = (w, d) => {
-        if(d.length < w) return "-";
-        let win = d.slice(-w);
-        return (win[win.length-1] - win[0]) >= 0 ? "B" : "S";
-    };
-
-    function analyze() {
-        history = []; let temp = []; let lp = { final: "-" };
-        digits.forEach((v) => {
-            const act = v >= 5 ? "B" : "S";
-            if (lp.final !== "-") {
-                const ck = (p, a) => p === a ? "✅" : "❌";
-                history.unshift({
-                    id: history.length + 1,
-                    res: `<b>${v}(${act})</b>`,
-                    pred: `${lp.final}${ck(lp.final, act)}`,
-                    abc: `${ck(lp.a5, act)}|${ck(lp.b5, act)}|${ck(lp.c5, act)}`
-                });
-            }
-            temp.push(v);
-            if (temp.length >= 8) {
-                lp = { 
-                    a5: getA(5,temp), a7: getA(7,temp), a10: getA(10,temp),
-                    b5: getB(5,temp), b7: getB(7,temp), b10: getB(10,temp),
-                    c5: getC(5,temp), c7: getC(7,temp), c10: getC(10,temp)
-                };
-                lp.final = (lp.a5 === "B" || lp.b5 === "B") ? "B" : "S";
-            }
-        });
-        render(lp);
+function resetData() {
+    if(confirm("ဒေတာအားလုံးကို ဖျက်မှာ သေချာပါသလား?")) {
+        localStorage.clear();
+        location.reload();
     }
+}
 
-    function render(lp) {
-        if (digits.length < 8) {
-            document.getElementById('mVal').innerText = "-";
-            document.getElementById('mStatus').innerText = `${8-digits.length} digits needed`;
-        } else {
-            document.getElementById('mVal').innerText = lp.final === "B" ? "BIG" : "SMALL";
-            document.getElementById('mVal').className = "master-val " + lp.final + "-text";
-            ['a5','a7','a10','b5','b7','b10','c5','c7','c10'].forEach(id => {
-                document.getElementById(id).innerText = lp[id];
-                document.getElementById(id).className = lp[id] + "-text";
-            });
+function handleInput(currentNum) {
+    const actualBS = currentNum >= 5 ? "B" : "S";
+    let justHit = false;
+    let hitIndex = -1;
+
+    activeTracks.forEach(t => { 
+        if (t.results.length < 8) {
+            const isWin = actualBS === t.pattern[t.results.length];
+            t.results.push(isWin ? "✅" : "❌");
+            
+            // လက်ရှိ Locked ဖြစ်နေတဲ့ pattern မှာ မှန်သလား စစ်ဆေးခြင်း
+            if (t.id == lockedTrackId && isWin) {
+                justHit = true;
+                hitIndex = t.results.length - 1;
+            }
         }
-        document.getElementById('histBody').innerHTML = history.map(h => `<tr><td>${h.id}</td><td>${h.res}</td><td>${h.pred}</td><td>${h.abc}</td></tr>`).join('');
+    });
+
+    if (lockedTrackId) {
+        let locked = activeTracks.find(t => t.id == lockedTrackId);
+        if (locked && (locked.results[locked.results.length-1] === "✅" || locked.results.length === 8)) {
+            lockedTrackId = null;
+        }
     }
 
-    function resetApp() { if(confirm("Reset?")) { digits=[]; update(); location.reload(); } }
+    if (rawInputs.length > 0) {
+        const type = (rawInputs[rawInputs.length - 1] % 2 === 0) ? 'even' : 'odd';
+        let newT = { id: Date.now()+Math.random(), digit: currentNum, type: type, pattern: myPatterns[type][currentNum], results: [], time: Date.now() };
+        activeTracks.push(newT);
+        if (!lockedTrackId) lockedTrackId = newT.id;
+    }
+
+    rawInputs.push(currentNum);
+    for (let i = activeTracks.length - 1; i >= 0; i--) {
+        if (activeTracks[i].results.length === 8) historyLog.unshift(activeTracks.splice(i, 1)[0]);
+    }
+    
+    saveData();
+    renderUI();
+
+    // မှန်ခဲ့ရင် Effect ပြရန်
+    if (justHit) {
+        const hitEl = document.getElementById(`step-${hitIndex}`);
+        hitEl.classList.add('hit-glow');
+        setTimeout(() => hitEl.classList.remove('hit-glow'), 600);
+    }
+}
+
+function renderUI() {
+    const locked = activeTracks.find(t => t.id == lockedTrackId);
+    const currentStepIndex = locked ? locked.results.length : -1;
+
+    document.getElementById('predDisplay').innerText = locked ? locked.pattern[currentStepIndex] : "-";
+    document.getElementById('statusLabel').innerText = locked ? `${locked.type.toUpperCase()}:${locked.digit} | STEP ${currentStepIndex+1}` : "WAITING FOR INPUT...";
+    
+    for(let i=0; i<8; i++) {
+        let el = document.getElementById(`step-${i}`);
+        let res = locked ? locked.results[i] : "";
+        el.className = `step-box ${res==='✅'?'hit':(res==='❌'?'miss':'')} ${i===currentStepIndex?'active-step':''}`;
+        el.innerText = res || (i+1);
+    }
+
+    const specSec = document.getElementById('specSection');
+    if (locked) {
+        specSec.style.display = "block";
+        document.getElementById('specTitle').innerText = `${locked.type.toUpperCase()} ${locked.digit}`;
+        const filtered = historyLog.filter(h => h.type === locked.type && h.digit === locked.digit).slice(0, 3);
+        
+        document.getElementById('specList').innerHTML = filtered.length > 0 ? filtered.map((h, idx) => `
+            <div class="spec-item">
+                <span style="color:var(--gold); width:15px; font-weight:bold;">${idx+1}.</span>
+                <div class="spec-res-grid">
+                    ${h.results.map((r, rIdx) => `
+                        <div class="spec-dot ${rIdx === currentStepIndex ? 'sync-highlight' : ''}" 
+                             style="color:${r === '✅' ? 'var(--green)' : 'var(--red)'}">
+                            ${r}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`).join('') : '<div style="font-size:10px; color:#555; text-align:center;">No previous patterns found.</div>';
+    } else {
+        specSec.style.display = "none";
+    }
+
+    document.getElementById('liveMonitor').innerHTML = activeTracks.map(t => `
+        <div class="live-item">
+            <span style="font-size:11px; font-weight:bold; color:${t.id==lockedTrackId?'var(--gold)':'var(--blue)'}">${t.type[0].toUpperCase()}:${t.digit}</span>
+            <div>${t.results.map(r=>`<div class="dot" style="background:${r==='✅'?'var(--green)':'var(--red)'}"></div>`).join('')}${Array(8-t.results.length).fill(0).map(()=>`<div class="dot" style="background:#333"></div>`).join('')}</div>
+        </div>`).join('');
+
+    document.getElementById('historyBody').innerHTML = historyLog.slice(0,10).map(h => `
+        <tr>
+            <td style="font-weight:bold; color:var(--gold)">${h.type[0].toUpperCase()}:${h.digit}</td>
+            <td style="letter-spacing:1px; font-size:10px;">${h.results.join(' ')}</td>
+            <td style="color:${h.results.includes('✅')?'var(--green)':'var(--red)'}; font-weight:bold;">${h.results.includes('✅')?'WIN':'LOSS'}</td>
+        </tr>`).join('');
+}
+
+function openCopyModal() { document.getElementById('copyModal').style.display = 'block'; generateCopy('normal'); }
+function generateCopy(mode) {
+    let data = [...historyLog];
+    if (mode === 'sorted') data.sort((a,b) => a.digit - b.digit);
+    let text = "Type\tDigit\tSteps\tResult\n";
+    data.forEach(h => text += `${h.type}\t${h.digit}\t${h.results.join('\t')}\t${h.results.includes('✅')?'WIN':'LOSS'}\n`);
+    document.getElementById('copyArea').value = text;
+}
+function doClipboardCopy() { document.getElementById('copyArea').select(); document.execCommand('copy'); alert("Copied!"); }
+
+renderUI();
 </script>
 </body>
 </html>
