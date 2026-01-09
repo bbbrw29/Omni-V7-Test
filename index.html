@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VIP STEALTH PRO - RE-FIXED</title>
+<title>VIP STEALTH PRO - FINAL REFINED</title>
 <style>
 :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --blue: #58a6ff; --gold: #d29922; --green: #238636; --red: #f85149; }
 body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 8px; margin: 0; }
@@ -12,7 +12,6 @@ body { font-family: sans-serif; background: var(--bg); color: var(--text); paddi
 
 h4 { margin: 0 0 8px 0; color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 5px; font-size: 10px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
 
-/* Pulse for Strict Trigger */
 @keyframes soft-pulse {
     0% { border-color: var(--border); }
     50% { border-color: var(--red); box-shadow: 0 0 10px rgba(248, 81, 73, 0.4); }
@@ -20,7 +19,6 @@ h4 { margin: 0 0 8px 0; color: var(--gold); border-bottom: 1px solid var(--borde
 }
 .signal-on { animation: soft-pulse 1.2s infinite; border-width: 1.5px !important; }
 
-/* Live Grid & Position Labels */
 .live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 .live-card { background: #000; padding: 8px; border-radius: 10px; border: 1.5px solid var(--border); }
 .live-info { display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; margin-bottom: 4px; border-bottom: 1px solid #222; }
@@ -29,15 +27,13 @@ h4 { margin: 0 0 8px 0; color: var(--gold); border-bottom: 1px solid var(--borde
 .dot { width: 100%; height: 6px; border-radius: 1px; }
 .pos-num { font-size: 7px; color: #555; }
 
-/* Mini History inside Live Card */
 .mini-hist { border-top: 1px solid #1a1a1a; padding-top: 4px; margin-top: 6px; }
 .mini-hist-row { display: flex; gap: 2px; margin-bottom: 2px; opacity: 0.3; }
 .mini-dot { width: 5px; height: 5px; border-radius: 1px; }
 
-/* Input Pad with Visual Feedback */
 .numpad-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
 .num-btn { height: 45px; background: #21262d; border: 1px solid var(--border); color: #fff; border-radius: 8px; font-size: 18px; font-weight: bold; transition: transform 0.1s; }
-.num-btn:active { transform: scale(0.9); background: var(--blue); }
+.num-btn:active { transform: scale(0.95); background: var(--blue); }
 
 .table-wrap { overflow-y: auto; max-height: 150px; background: #000; border-radius: 8px; }
 table { width: 100%; border-collapse: collapse; font-size: 9px; }
@@ -45,7 +41,9 @@ td { padding: 8px 4px; border-bottom: 1px solid #222; text-align: center; }
 
 #copyModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; padding: 20px; }
 .modal-content { background: var(--card); padding: 15px; border-radius: 15px; border: 1px solid var(--gold); max-width: 380px; margin: auto; margin-top: 40px; }
-textarea { width: 100%; height: 180px; background: #000; color: #0f0; margin: 10px 0; padding: 8px; box-sizing: border-box; font-family: monospace; }
+textarea { width: 100%; height: 180px; background: #000; color: #0f0; margin: 10px 0; padding: 8px; box-sizing: border-box; font-family: monospace; font-size: 11px; }
+.btn-group { display: flex; gap: 5px; margin-bottom: 8px; }
+.btn-m { flex: 1; padding: 8px; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 10px; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -86,13 +84,16 @@ textarea { width: 100%; height: 180px; background: #000; color: #0f0; margin: 10
 
 <div id="copyModal"><div class="modal-content">
     <h4 style="justify-content:center; border:none;">EXPORT LOGS</h4>
+    <div class="btn-group">
+        <button class="btn-m" style="background:var(--blue);" onclick="generateCopy('normal')">SORT BY TIME</button>
+        <button class="btn-m" style="background:var(--gold); color:black;" onclick="generateCopy('sorted')">SORT BY ID</button>
+    </div>
     <textarea id="copyArea" readonly></textarea>
-    <button onclick="doClipboardCopy()" style="width:100%; padding:10px; background:var(--green); border:none; color:white; border-radius:5px;">COPY CLIPBOARD</button>
+    <button onclick="doClipboardCopy()" style="width:100%; padding:10px; background:var(--green); border:none; color:white; border-radius:5px;">COPY TO CLIPBOARD</button>
     <button onclick="document.getElementById('copyModal').style.display='none'" style="width:100%; padding:10px; background:#444; border:none; color:white; border-radius:5px; margin-top:5px;">CLOSE</button>
 </div></div>
 
 <script>
-// Patterns LOCKED (A:2 Fix)
 const myPatterns = {
     even: { 0:"BBBSSBBB", 1:"SBSSBBBB", 2:"BBBSSSSB", 3:"SBBBBSSB", 4:"BBBBSSBB", 5:"BBBSSSBB", 6:"BBBSSSBB", 7:"SBBSSBBS", 8:"BBBSSBBB", 9:"BBBSSBBB" },
     odd: { 0:"SBBSSBSS", 1:"BBBSSBBS", 2:"BBBBSSSB", 3:"BBBBSSBS", 4:"BBBBSSBS", 5:"BSBBSSBS", 6:"BBBSSBBS", 7:"BBBSSBBB", 8:"BBBSSBBB", 9:"BBBBSSBB" }
@@ -125,12 +126,10 @@ function undoInput() {
 function handleInput(num) {
     const bs = num >= 5 ? "B" : "S";
     activeTracks.forEach(t => { if (t.results.length < 8) t.results.push(bs === t.pattern[t.results.length] ? "✅" : "❌"); });
-
     if (lockedTrackId) {
         let locked = activeTracks.find(t => t.id == lockedTrackId);
         if (locked && (locked.results[locked.results.length-1] === "✅" || locked.results.length === 8)) lockedTrackId = null;
     }
-
     if (rawInputs.length > 0) {
         const type = (rawInputs[rawInputs.length-1] % 2 === 0) ? 'even' : 'odd';
         let newT = { id: Date.now()+Math.random(), digit: num, type: type, pattern: myPatterns[type][num], results: [] };
@@ -149,7 +148,6 @@ function renderUI() {
     const stepIdx = locked ? locked.results.length : -1;
     document.getElementById('predDisplay').innerText = locked ? locked.pattern[stepIdx] : "-";
     document.getElementById('statusLabel').innerText = locked ? `ID:${locked.type[0].toUpperCase()}${locked.digit} | POS:${stepIdx+1}` : "WAITING";
-    
     for(let i=0; i<8; i++) {
         let el = document.getElementById(`step-${i}`);
         let res = locked ? locked.results[i] : "";
@@ -157,11 +155,9 @@ function renderUI() {
         el.style.border = (i===stepIdx) ? '1.5px solid var(--gold)' : '1px solid #444';
         el.innerText = res || (i+1);
     }
-
     document.getElementById('liveMonitor').innerHTML = activeTracks.map(t => {
         const isTriggered = !t.results.includes("✅") && t.results.length >= 3;
         const sHist = historyLog.filter(h => h.type === t.type && h.digit === t.digit).slice(0, 2);
-
         return `
         <div class="live-card ${isTriggered ? 'signal-on' : ''}">
             <div class="live-info">
@@ -181,7 +177,6 @@ function renderUI() {
             </div>
         </div>`;
     }).join('');
-
     document.getElementById('historyBody').innerHTML = historyLog.slice(0,20).map(h => `
         <tr>
             <td style="color:var(--gold); font-weight:bold;">${h.type[0].toUpperCase()}:${h.digit}</td>
@@ -191,11 +186,22 @@ function renderUI() {
 }
 
 function openCopyModal() { document.getElementById('copyModal').style.display = 'block'; generateCopy('normal'); }
+
 function generateCopy(mode) {
+    let list = [...historyLog];
+    if (mode === 'sorted') {
+        list.sort((a, b) => {
+            if (a.type !== b.type) return a.type.localeCompare(b.type);
+            return a.digit - b.digit;
+        });
+    }
     let text = "ID\tRECORD\tSTAT\n";
-    historyLog.forEach(h => text += `${h.type[0].toUpperCase()}:${h.digit}\t${h.results.join('')}\t${h.results.includes('✅')?'W':'L'}\n`);
+    list.forEach(h => {
+        text += `${h.type[0].toUpperCase()}:${h.digit}\t${h.results.join('')}\t${h.results.includes('✅')?'W':'L'}\n`;
+    });
     document.getElementById('copyArea').value = text;
 }
+
 function doClipboardCopy() { document.getElementById('copyArea').select(); document.execCommand('copy'); alert("Copied!"); }
 renderUI();
 </script>
