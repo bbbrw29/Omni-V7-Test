@@ -20,22 +20,33 @@ h4 { margin: 0 0 8px 0; color: var(--gold); border-bottom: 1px solid var(--borde
 .signal-on { animation: soft-pulse 1.2s infinite; border-width: 1.5px !important; }
 
 .live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.live-card { background: #000; padding: 8px; border-radius: 10px; border: 1.5px solid var(--border); position: relative; }
+.live-card { background: #000; padding: 8px; border-radius: 10px; border: 1.5px solid var(--border); display: flex; flex-direction: column; }
 .live-info { display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; margin-bottom: 4px; border-bottom: 1px solid #222; }
 .live-dots { display: flex; gap: 2px; margin-top: 2px; }
 .dot-col { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
 .dot { width: 100%; height: 6px; border-radius: 1px; }
 .pos-num { font-size: 7px; color: #555; }
 
-/* AI Advice Styling */
-.ai-advice { margin-top: 6px; padding: 4px; border-radius: 4px; font-size: 9px; font-weight: bold; text-align: center; text-transform: uppercase; }
-.ai-wait { background: #333; color: #888; }
-.ai-confirm { background: var(--green); color: #fff; animation: blink 1s infinite; }
-.ai-recovery { background: var(--purple); color: #fff; border: 1px dashed #fff; }
+/* --- AI ADVICE STYLING (FIXED) --- */
+.ai-advice-box { 
+    margin: 8px 0; 
+    padding: 6px; 
+    border-radius: 6px; 
+    font-size: 10px; 
+    font-weight: 900; 
+    text-align: center; 
+    letter-spacing: 0.5px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.status-waiting { background: #1a1a1a; color: #444; }
+.status-sniper { background: var(--green); color: white; animation: flash 0.8s infinite; }
+/* REC ကို ရွှေရောင်ပြောင်းထားသည် */
+.status-recovery { background: var(--gold); color: black; border: 1px solid white; box-shadow: 0 0 5px var(--gold); }
+.status-win { background: #002b00; color: var(--green); }
 
-@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+@keyframes flash { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-.mini-hist { border-top: 1px solid #1a1a1a; padding-top: 4px; margin-top: 6px; }
+.mini-hist { border-top: 1px solid #1a1a1a; padding-top: 4px; margin-top: auto; }
 .mini-hist-row { display: flex; gap: 2px; margin-bottom: 2px; opacity: 0.3; }
 .mini-dot { width: 5px; height: 5px; border-radius: 1px; }
 
@@ -67,7 +78,7 @@ textarea { width: 100%; height: 180px; background: #000; color: #0f0; margin: 10
     </div>
 
     <div class="panel">
-        <h4 style="color:var(--gold);">LIVE TRACKING (AI ANALYZING...)</h4>
+        <h4 style="color:var(--gold);">LIVE TRACKING (5 & 6 ANALYZER)</h4>
         <div id="liveMonitor" class="live-grid"></div>
     </div>
 
@@ -133,7 +144,16 @@ function undoInput() {
 
 function handleInput(num) {
     const bs = num >= 5 ? "B" : "S";
-    activeTracks.forEach(t => { if (t.results.length < 8) t.results.push(bs === t.pattern[t.results.length] ? "✅" : "❌"); });
+    activeTracks.forEach(t => { 
+        if (t.results.length < 8) {
+            // REC logic: if pos 5 was wrong, target for pos 6 is reversed
+            let target = t.pattern[t.results.length];
+            if(t.results.length === 5 && t.results[4] === "❌") {
+                target = (t.pattern[5] === "B" ? "S" : "B");
+            }
+            t.results.push(bs === target ? "✅" : "❌"); 
+        }
+    });
     if (lockedTrackId) {
         let locked = activeTracks.find(t => t.id == lockedTrackId);
         if (locked && (locked.results[locked.results.length-1] === "✅" || locked.results.length === 8)) lockedTrackId = null;
@@ -154,8 +174,15 @@ function handleInput(num) {
 function renderUI() {
     const locked = activeTracks.find(t => t.id == lockedTrackId);
     const stepIdx = locked ? locked.results.length : -1;
-    document.getElementById('predDisplay').innerText = locked ? locked.pattern[stepIdx] : "-";
+    
+    // Core Engine display logic to match Rec/Sniper
+    let currentPred = locked ? locked.pattern[stepIdx] : "-";
+    if (locked && stepIdx === 5 && locked.results[4] === "❌") {
+        currentPred = (locked.pattern[5] === "B" ? "S" : "B");
+    }
+    document.getElementById('predDisplay').innerText = currentPred;
     document.getElementById('statusLabel').innerText = locked ? `ID:${locked.type[0].toUpperCase()}${locked.digit} | POS:${stepIdx+1}` : "WAITING";
+    
     for(let i=0; i<8; i++) {
         let el = document.getElementById(`step-${i}`);
         let res = locked ? locked.results[i] : "";
@@ -163,80 +190,68 @@ function renderUI() {
         el.style.border = (i===stepIdx) ? '1.5px solid var(--gold)' : '1px solid #444';
         el.innerText = res || (i+1);
     }
+
     document.getElementById('liveMonitor').innerHTML = activeTracks.map(t => {
         const isTriggered = !t.results.includes("✅") && t.results.length >= 3;
         const sHist = historyLog.filter(h => h.type === t.type && h.digit === t.digit).slice(0, 2);
         
-        // --- AI PREDICTION LAYER LOGIC ---
-        let aiAdvice = "Analyzing...";
-        let aiClass = "ai-wait";
+        let msg = "PENDING";
+        let css = "status-waiting";
+        let displayTarget = t.pattern[t.results.length];
         
-        if (t.results.length === 4) { // Pos 5 Prediction
-            const patternA = t.results.slice(0, 4).join('');
+        if (t.results.length === 4) { 
             if (!t.results.includes("✅")) {
-                aiAdvice = `🔥 SNIPER: BET ${t.pattern[4]}`;
-                aiClass = "ai-confirm";
-            } else {
-                aiAdvice = "Check Next...";
-            }
-        } else if (t.results.length === 5) { // Pos 6 Recovery
+                msg = `🔥 POS 5: BET ${t.pattern[4]}`;
+                css = "status-sniper";
+            } else msg = "WATCHING";
+        } else if (t.results.length === 5) { 
             if (t.results[4] === "❌") {
-                const reversePred = t.pattern[5] === "B" ? "S" : "B";
-                aiAdvice = `🔄 REC-6: BET ${reversePred}`;
-                aiClass = "ai-recovery";
+                const rev = t.pattern[5] === "B" ? "S" : "B";
+                displayTarget = rev;
+                msg = `🔄 REC 6: BET ${rev}`;
+                css = "status-recovery";
             } else {
-                aiAdvice = "WIN AT POS 5";
+                msg = "POS 5 WIN ✅";
+                css = "status-win";
             }
-        } else if (t.results.length > 5) {
-            aiAdvice = "Completed/Wait";
         }
-        // ---------------------------------
 
         return `
         <div class="live-card ${isTriggered ? 'signal-on' : ''}">
             <div class="live-info">
-                <span style="color:${isTriggered ? 'var(--red)' : '#888'}">${t.type[0].toUpperCase()}:${t.digit} (P:${t.results.length+1})</span>
-                <span style="color:var(--gold); font-weight:900;">${t.pattern[t.results.length] || '-'}</span>
+                <span style="color:${isTriggered ? 'var(--red)' : '#888'}">${t.type[0].toUpperCase()}:${t.digit}</span>
+                <span style="color:var(--gold); font-weight:900;">${displayTarget || '-'}</span>
             </div>
-            <div class="live-dots">
-                ${t.pattern.split('').map((p, i) => `
-                    <div class="dot-col">
-                        <div class="dot" style="background:${t.results[i] === '✅' ? 'var(--green)' : (t.results[i] === '❌' ? 'var(--red)' : '#222')}"></div>
-                        <div class="pos-num">${i+1}</div>
-                    </div>
-                `).join('')}
-            </div>
-            <div class="ai-advice ${aiClass}">${aiAdvice}</div>
-            <div class="mini-hist">
-                ${sHist.map(h => `<div class="mini-hist-row">${h.results.map(r => `<div class="mini-dot" style="background:${r==='✅'?'var(--green)':'var(--red)'}"></div>`).join('')}</div>`).join('')}
-            </div>
+            <div class="live-dots">${t.pattern.split('').map((p, i) => `<div class="dot-col"><div class="dot" style="background:${t.results[i] === '✅' ? 'var(--green)' : (t.results[i] === '❌' ? 'var(--red)' : '#222')}"></div></div>`).join('')}</div>
+            <div class="ai-advice-box ${css}">${msg}</div>
+            <div class="mini-hist">${sHist.map(h => `<div class="mini-hist-row">${h.results.map(r => `<div class="mini-dot" style="background:${r==='✅'?'var(--green)':'var(--red)'}"></div>`).join('')}</div>`).join('')}</div>
         </div>`;
     }).join('');
-    document.getElementById('historyBody').innerHTML = historyLog.slice(0,20).map(h => `
+
+    document.getElementById('historyBody').innerHTML = historyLog.slice(0,20).map(h => {
+        // AI Mode checker for History
+        let aiMode = "NORMAL";
+        if (h.results[4] === "✅" && !h.results.slice(0,4).includes("✅")) aiMode = "SNIPER HIT";
+        else if (h.results[5] === "✅" && h.results[4] === "❌") aiMode = "REC HIT";
+        else if (h.results[4] === "❌" && h.results[5] === "❌") aiMode = "REC FAIL";
+
+        return `
         <tr>
             <td style="color:var(--gold); font-weight:bold;">${h.type[0].toUpperCase()}:${h.digit}</td>
             <td style="letter-spacing:1px; color:#777;">${h.results.join('')}</td>
-            <td style="color:${h.results.includes('✅')?'var(--green)':'var(--red)'};">${h.results.includes('✅')?'WIN':'LOSS'}</td>
-        </tr>`).join('');
+            <td style="color:${aiMode.includes('REC')?'var(--gold)':(aiMode.includes('SNIPER')?'var(--green)':'#555')}; font-size:8px; font-weight:bold;">${aiMode}</td>
+            <td style="color:${h.results.includes('✅')?'var(--green)':'var(--red)'}; font-weight:bold;">${h.results.includes('✅')?'WIN':'LOSS'}</td>
+        </tr>`}).join('');
 }
 
 function openCopyModal() { document.getElementById('copyModal').style.display = 'block'; generateCopy('normal'); }
-
 function generateCopy(mode) {
     let list = [...historyLog];
-    if (mode === 'sorted') {
-        list.sort((a, b) => {
-            if (a.type !== b.type) return a.type.localeCompare(b.type);
-            return a.digit - b.digit;
-        });
-    }
+    if (mode === 'sorted') list.sort((a, b) => a.type !== b.type ? a.type.localeCompare(b.type) : a.digit - b.digit);
     let text = "ID\tRECORD\tSTAT\n";
-    list.forEach(h => {
-        text += `${h.type[0].toUpperCase()}:${h.digit}\t${h.results.join('')}\t${h.results.includes('✅')?'W':'L'}\n`;
-    });
+    list.forEach(h => { text += `${h.type[0].toUpperCase()}:${h.digit}\t${h.results.join('')}\t${h.results.includes('✅')?'W':'L'}\n`; });
     document.getElementById('copyArea').value = text;
 }
-
 function doClipboardCopy() { document.getElementById('copyArea').select(); document.execCommand('copy'); alert("Copied!"); }
 renderUI();
 </script>
