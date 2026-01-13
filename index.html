@@ -12,6 +12,24 @@ body { font-family: sans-serif; background: var(--bg); color: var(--text); paddi
 
 h4 { margin: 0 0 8px 0; color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 5px; font-size: 10px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
 
+/* AI STRATEGY LOG STYLE (FIT HEIGHT & SCROLL) */
+.log-box {
+    background: #000;
+    border: 1px solid #222;
+    border-radius: 8px;
+    height: 140px; /* Fixed Height */
+    overflow-y: auto; /* Scrollable */
+    padding: 8px;
+}
+.log-entry {
+    font-family: monospace;
+    font-size: 11px;
+    padding: 4px 0;
+    border-bottom: 1px solid #111;
+    display: flex;
+    justify-content: space-between;
+}
+
 @keyframes soft-pulse {
     0% { border-color: var(--border); }
     50% { border-color: var(--red); box-shadow: 0 0 10px rgba(248, 81, 73, 0.4); }
@@ -27,14 +45,7 @@ h4 { margin: 0 0 8px 0; color: var(--gold); border-bottom: 1px solid var(--borde
 .dot { width: 100%; height: 6px; border-radius: 1px; }
 
 .ai-advice-box { 
-    margin: 8px 0; 
-    padding: 6px; 
-    border-radius: 6px; 
-    font-size: 10px; 
-    font-weight: 900; 
-    text-align: center; 
-    letter-spacing: 0.5px;
-    border: 1px solid rgba(255,255,255,0.1);
+    margin: 8px 0; padding: 6px; border-radius: 6px; font-size: 10px; font-weight: 900; text-align: center; letter-spacing: 0.5px; border: 1px solid rgba(255,255,255,0.1);
 }
 .status-waiting { background: #1a1a1a; color: #444; }
 .status-sniper { background: var(--green); color: white; animation: flash 0.8s infinite; }
@@ -58,8 +69,6 @@ td { padding: 8px 4px; border-bottom: 1px solid #222; text-align: center; }
 #copyModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; padding: 20px; }
 .modal-content { background: var(--card); padding: 15px; border-radius: 15px; border: 1px solid var(--gold); max-width: 380px; margin: auto; margin-top: 40px; }
 textarea { width: 100%; height: 180px; background: #000; color: #0f0; margin: 10px 0; padding: 8px; box-sizing: border-box; font-family: monospace; font-size: 11px; }
-.btn-group { display: flex; gap: 5px; margin-bottom: 8px; }
-.btn-m { flex: 1; padding: 8px; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 10px; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -74,14 +83,10 @@ textarea { width: 100%; height: 180px; background: #000; color: #0f0; margin: 10
         </div>
     </div>
 
-    <div class="panel" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #000; border: 1px dashed var(--gold); padding: 8px;">
-        <div style="text-align: center; border-right: 1px solid #222;">
-            <div style="font-size: 8px; color: var(--green); font-weight: bold;">SNIPER HIT</div>
-            <div id="sniperCount" style="font-size: 18px; font-weight: bold; color: white;">0</div>
-        </div>
-        <div style="text-align: center;">
-            <div style="font-size: 8px; color: var(--gold); font-weight: bold;">REC HIT</div>
-            <div id="recCount" style="font-size: 18px; font-weight: bold; color: white;">0</div>
+    <div class="panel">
+        <h4 style="color:var(--purple);">AI STRATEGY LOG</h4>
+        <div id="strategyLog" class="log-box">
+            <div style="color:#333; text-align:center; margin-top:50px; font-size:10px;">Waiting for Sniper/Rec events...</div>
         </div>
     </div>
 
@@ -110,13 +115,8 @@ textarea { width: 100%; height: 180px; background: #000; color: #0f0; margin: 10
 </div>
 
 <div id="copyModal"><div class="modal-content">
-    <h4 style="justify-content:center; border:none;">EXPORT LOGS</h4>
-    <div class="btn-group">
-        <button class="btn-m" style="background:var(--blue);" onclick="generateCopy('normal')">SORT BY TIME</button>
-        <button class="btn-m" style="background:var(--gold); color:black;" onclick="generateCopy('sorted')">SORT BY ID</button>
-    </div>
     <textarea id="copyArea" readonly></textarea>
-    <button onclick="doClipboardCopy()" style="width:100%; padding:10px; background:var(--green); border:none; color:white; border-radius:5px;">COPY TO CLIPBOARD</button>
+    <button onclick="doClipboardCopy()" style="width:100%; padding:10px; background:var(--green); border:none; color:white; border-radius:5px;">COPY</button>
     <button onclick="document.getElementById('copyModal').style.display='none'" style="width:100%; padding:10px; background:#444; border:none; color:white; border-radius:5px; margin-top:5px;">CLOSE</button>
 </div></div>
 
@@ -129,17 +129,19 @@ const myPatterns = {
 let rawInputs = JSON.parse(localStorage.getItem('rawInputs')) || [];
 let activeTracks = JSON.parse(localStorage.getItem('activeTracks')) || [];
 let historyLog = JSON.parse(localStorage.getItem('historyLog')) || [];
+let aiStrategyLog = JSON.parse(localStorage.getItem('aiStrategyLog')) || [];
 let lockedTrackId = localStorage.getItem('lockedTrackId') || null;
 
 function saveData() {
     localStorage.setItem('rawInputs', JSON.stringify(rawInputs));
     localStorage.setItem('activeTracks', JSON.stringify(activeTracks));
     localStorage.setItem('historyLog', JSON.stringify(historyLog));
+    localStorage.setItem('aiStrategyLog', JSON.stringify(aiStrategyLog));
     if (lockedTrackId) localStorage.setItem('lockedTrackId', lockedTrackId);
     else localStorage.removeItem('lockedTrackId');
 }
 
-function resetData() { if(confirm("Clear all data?")) { localStorage.clear(); location.reload(); } }
+function resetData() { if(confirm("Clear all?")) { localStorage.clear(); location.reload(); } }
 
 function undoInput() {
     if (rawInputs.length === 0) return;
@@ -162,10 +164,19 @@ function handleInput(num) {
         }
     });
 
-    // ၈ လုံးပြည့်လျှင် History ထဲသို့ ချက်ချင်းရွှေ့ရန်
     for (let i = activeTracks.length - 1; i >= 0; i--) {
         if (activeTracks[i].results.length === 8) {
-            historyLog.unshift(activeTracks.splice(i, 1)[0]);
+            let h = activeTracks.splice(i, 1)[0];
+            historyLog.unshift(h);
+            
+            // AI LOGIC FOR STRATEGY LOG
+            let entry = "";
+            if (h.results[4] === "✅" && !h.results.slice(0,4).includes("✅")) entry = "SNIPER HIT ✅";
+            else if (h.results[4] === "❌") {
+                if (h.results[5] === "✅") entry = "REC HIT ✅";
+                else if (h.results[5] === "❌") entry = "REC FAIL ❌";
+            }
+            if (entry) aiStrategyLog.unshift(`${aiStrategyLog.length + 1}. ${entry}`);
         }
     }
 
@@ -198,69 +209,29 @@ function renderUI() {
         let el = document.getElementById(`step-${i}`);
         let res = locked ? locked.results[i] : "";
         el.style.background = res==='✅'?'var(--green)':(res==='❌'?'var(--red)':'#222');
-        el.style.border = (i===stepIdx) ? '1.5px solid var(--gold)' : '1px solid #444';
         el.innerText = res || (i+1);
     }
 
-    // SNIPER & REC Hits ရေတွက်ခြင်း
-    let sWins = historyLog.filter(h => h.results[4] === "✅" && !h.results.slice(0,4).includes("✅")).length;
-    let rWins = historyLog.filter(h => h.results[5] === "✅" && h.results[4] === "❌").length;
-    document.getElementById('sniperCount').innerText = sWins;
-    document.getElementById('recCount').innerText = rWins;
+    // RENDER STRATEGY LOG
+    const logBox = document.getElementById('strategyLog');
+    if (aiStrategyLog.length > 0) {
+        logBox.innerHTML = aiStrategyLog.map(item => {
+            let color = item.includes('✅') ? 'var(--green)' : 'var(--red)';
+            return `<div class="log-entry" style="color:${color}">${item}</div>`;
+        }).join('');
+    }
 
     document.getElementById('liveMonitor').innerHTML = activeTracks.map(t => {
-        const isTriggered = !t.results.includes("✅") && t.results.length >= 3;
-        const sHist = historyLog.filter(h => h.type === t.type && h.digit === t.digit).slice(0, 2);
-        let msg = "PENDING", css = "status-waiting", displayTarget = t.pattern[t.results.length];
-        
-        if (t.results.length === 4) { 
-            if (!t.results.includes("✅")) { msg = `🔥 POS 5: BET ${t.pattern[4]}`; css = "status-sniper"; }
-            else msg = "WATCHING";
-        } else if (t.results.length === 5) { 
-            if (t.results[4] === "❌") {
-                const rev = t.pattern[5] === "B" ? "S" : "B";
-                displayTarget = rev; msg = `🔄 REC 6: BET ${rev}`; css = "status-recovery";
-            } else { msg = "POS 5 WIN ✅"; css = "status-win"; }
-        }
-
-        return `
-        <div class="live-card ${isTriggered ? 'signal-on' : ''}">
-            <div class="live-info"><span>${t.type[0].toUpperCase()}:${t.digit}</span><span style="color:var(--gold); font-weight:900;">${displayTarget || '-'}</span></div>
-            <div class="live-dots">${t.pattern.split('').map((p, i) => `<div class="dot-col"><div class="dot" style="background:${t.results[i] === '✅' ? 'var(--green)' : (t.results[i] === '❌' ? 'var(--red)' : '#222')}"></div></div>`).join('')}</div>
-            <div class="ai-advice-box ${css}">${msg}</div>
-            <div class="mini-hist">${sHist.map(h => `<div class="mini-hist-row">${h.results.map(r => `<div class="mini-dot" style="background:${r==='✅'?'var(--green)':'var(--red)'}"></div>`).join('')}</div>`).join('')}</div>
-        </div>`;
+        let msg = "PENDING", css = "status-waiting";
+        if (t.results.length === 4 && !t.results.includes("✅")) { msg = "🔥 SNIPER"; css = "status-sniper"; }
+        else if (t.results.length === 5 && t.results[4] === "❌") { msg = "🔄 RECOVERY"; css = "status-recovery"; }
+        return `<div class="live-card"><div class="live-info"><span>${t.type[0].toUpperCase()}:${t.digit}</span></div><div class="ai-advice-box ${css}">${msg}</div></div>`;
     }).join('');
 
-    document.getElementById('historyBody').innerHTML = historyLog.slice(0,20).map(h => {
-        let aiMode = "NORMAL";
-        if (h.results[4] === "✅" && !h.results.slice(0,4).includes("✅")) aiMode = "SNIPER HIT";
-        else if (h.results[5] === "✅" && h.results[4] === "❌") aiMode = "REC HIT";
-        else if (h.results[4] === "❌" && h.results[5] === "❌") aiMode = "REC FAIL";
-
-        return `
-        <tr>
-            <td style="color:var(--gold); font-weight:bold;">${h.type[0].toUpperCase()}:${h.digit}</td>
-            <td style="letter-spacing:1px; color:#777;">${h.results.join('')}</td>
-            <td style="color:${aiMode.includes('REC')?'var(--gold)':(aiMode.includes('SNIPER')?'var(--green)':'#555')}; font-size:8px; font-weight:bold;">${aiMode}</td>
-            <td style="color:${h.results.includes('✅')?'var(--green)':'var(--red)'}; font-weight:bold;">${h.results.includes('✅')?'WIN':'LOSS'}</td>
-        </tr>`}).join('');
+    document.getElementById('historyBody').innerHTML = historyLog.slice(0,20).map(h => `<tr><td style="color:var(--gold);">${h.type[0].toUpperCase()}:${h.digit}</td><td>${h.results.join('')}</td><td style="color:${h.results.includes('✅')?'var(--green)':'var(--red)'};">${h.results.includes('✅')?'W':'L'}</td></tr>`).join('');
 }
 
-function openCopyModal() { document.getElementById('copyModal').style.display = 'block'; generateCopy('normal'); }
-function generateCopy(mode) {
-    let list = [...historyLog];
-    if (mode === 'sorted') list.sort((a, b) => a.type !== b.type ? a.type.localeCompare(b.type) : a.digit - b.digit);
-    let text = "ID\tRECORD\tMODE\tSTAT\n";
-    list.forEach(h => {
-        let aiMode = "NORMAL";
-        if (h.results[4] === "✅" && !h.results.slice(0,4).includes("✅")) aiMode = "SNIPER_HIT";
-        else if (h.results[5] === "✅" && h.results[4] === "❌") aiMode = "REC_HIT";
-        else if (h.results[4] === "❌" && h.results[5] === "❌") aiMode = "REC_FAIL";
-        text += `${h.type[0].toUpperCase()}:${h.digit}\t${h.results.join('')}\t${aiMode}\t${h.results.includes('✅')?'W':'L'}\n`;
-    });
-    document.getElementById('copyArea').value = text;
-}
+function openCopyModal() { document.getElementById('copyArea').value = aiStrategyLog.join('\n'); document.getElementById('copyModal').style.display='block'; }
 function doClipboardCopy() { document.getElementById('copyArea').select(); document.execCommand('copy'); alert("Copied!"); }
 renderUI();
 </script>
