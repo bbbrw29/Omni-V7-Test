@@ -146,7 +146,6 @@ function handleInput(num) {
     const bs = num >= 5 ? "B" : "S";
     activeTracks.forEach(t => { 
         if (t.results.length < 8) {
-            // REC logic: if pos 5 was wrong, target for pos 6 is reversed
             let target = t.pattern[t.results.length];
             if(t.results.length === 5 && t.results[4] === "❌") {
                 target = (t.pattern[5] === "B" ? "S" : "B");
@@ -175,7 +174,6 @@ function renderUI() {
     const locked = activeTracks.find(t => t.id == lockedTrackId);
     const stepIdx = locked ? locked.results.length : -1;
     
-    // Core Engine display logic to match Rec/Sniper
     let currentPred = locked ? locked.pattern[stepIdx] : "-";
     if (locked && stepIdx === 5 && locked.results[4] === "❌") {
         currentPred = (locked.pattern[5] === "B" ? "S" : "B");
@@ -229,7 +227,6 @@ function renderUI() {
     }).join('');
 
     document.getElementById('historyBody').innerHTML = historyLog.slice(0,20).map(h => {
-        // AI Mode checker for History
         let aiMode = "NORMAL";
         if (h.results[4] === "✅" && !h.results.slice(0,4).includes("✅")) aiMode = "SNIPER HIT";
         else if (h.results[5] === "✅" && h.results[4] === "❌") aiMode = "REC HIT";
@@ -248,8 +245,17 @@ function openCopyModal() { document.getElementById('copyModal').style.display = 
 function generateCopy(mode) {
     let list = [...historyLog];
     if (mode === 'sorted') list.sort((a, b) => a.type !== b.type ? a.type.localeCompare(b.type) : a.digit - b.digit);
-    let text = "ID\tRECORD\tSTAT\n";
-    list.forEach(h => { text += `${h.type[0].toUpperCase()}:${h.digit}\t${h.results.join('')}\t${h.results.includes('✅')?'W':'L'}\n`; });
+    
+    // Header ထဲတွင် MODE ထည့်သွင်းထားသည်
+    let text = "ID\tRECORD\tMODE\tSTAT\n";
+    list.forEach(h => {
+        let aiMode = "NORMAL";
+        if (h.results[4] === "✅" && !h.results.slice(0,4).includes("✅")) aiMode = "SNIPER_HIT";
+        else if (h.results[5] === "✅" && h.results[4] === "❌") aiMode = "REC_HIT";
+        else if (h.results[4] === "❌" && h.results[5] === "❌") aiMode = "REC_FAIL";
+
+        text += `${h.type[0].toUpperCase()}:${h.digit}\t${h.results.join('')}\t${aiMode}\t${h.results.includes('✅')?'W':'L'}\n`;
+    });
     document.getElementById('copyArea').value = text;
 }
 function doClipboardCopy() { document.getElementById('copyArea').select(); document.execCommand('copy'); alert("Copied!"); }
