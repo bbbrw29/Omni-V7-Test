@@ -3,104 +3,81 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VIP PATTERN PRO - GLOW EDITION</title>
+<title>VIP STEALTH PRO - AI ENHANCED</title>
 <style>
-:root { 
-    --bg: #0d1117; --card: #161b22; --border: #30363d; 
-    --text: #c9d1d9; --blue: #58a6ff; --gold: #d29922; 
-    --green: #238636; --red: #f85149; 
-}
-
-body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; overflow-x: hidden; }
+:root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --blue: #58a6ff; --gold: #d29922; --green: #238636; --red: #f85149; --purple: #a371f7; }
+body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 8px; margin: 0; }
 .container { max-width: 420px; margin: auto; }
-.panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+.panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px; margin-bottom: 8px; }
 
-h4 { margin: 0 0 10px 0; color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 5px; font-size: 11px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+h4 { margin: 0 0 8px 0; color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 5px; font-size: 10px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
 
-/* Prediction Box */
-.pred-box { text-align: center; background: #000; border: 2px solid var(--gold); padding: 15px; border-radius: 15px; position: relative; overflow: hidden; }
-.pred-val { font-size: 65px; font-weight: bold; color: var(--blue); line-height: 1; margin: 10px 0; transition: all 0.3s; }
-
-/* Step Grid */
-.step-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; margin-top: 10px; }
-.step-box { 
-    height: 35px; border: 1px solid #444; border-radius: 8px; 
-    display: flex; align-items: center; justify-content: center; 
-    font-size: 12px; background: #222; position: relative; transition: 0.3s;
+@keyframes soft-pulse {
+    0% { border-color: var(--border); }
+    50% { border-color: var(--red); box-shadow: 0 0 10px rgba(248, 81, 73, 0.4); }
+    100% { border-color: var(--border); }
 }
+.signal-on { animation: soft-pulse 1.2s infinite; border-width: 1.5px !important; }
 
-/* --- GLOW RIPPLE ANIMATION (၃) --- */
-@keyframes ripple-gold {
-    0% { box-shadow: 0 0 0 0 rgba(210, 153, 34, 0.7); transform: scale(1); }
-    50% { box-shadow: 0 0 20px 10px rgba(210, 153, 34, 0); transform: scale(1.1); }
-    100% { box-shadow: 0 0 0 0 rgba(210, 153, 34, 0); transform: scale(1); }
-}
+.live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.live-card { background: #000; padding: 8px; border-radius: 10px; border: 1.5px solid var(--border); position: relative; }
+.live-info { display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; margin-bottom: 4px; border-bottom: 1px solid #222; }
+.live-dots { display: flex; gap: 2px; margin-top: 2px; }
+.dot-col { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
+.dot { width: 100%; height: 6px; border-radius: 1px; }
+.pos-num { font-size: 7px; color: #555; }
 
-.hit-glow { 
-    animation: ripple-gold 0.6s ease-out; 
-    background: var(--green) !important; 
-    border-color: var(--gold) !important;
-    z-index: 10;
-}
+/* AI Advice Styling */
+.ai-advice { margin-top: 6px; padding: 4px; border-radius: 4px; font-size: 9px; font-weight: bold; text-align: center; text-transform: uppercase; }
+.ai-wait { background: #333; color: #888; }
+.ai-confirm { background: var(--green); color: #fff; animation: blink 1s infinite; }
+.ai-recovery { background: var(--purple); color: #fff; border: 1px dashed #fff; }
 
-/* လက်ရှိရောက်နေတဲ့ Step Highlight */
-.active-step { border: 2px solid var(--gold) !important; background: #332b00 !important; }
+@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-.hit { background: var(--green) !important; border: none; color: white; }
-.miss { background: var(--red) !important; border: none; color: white; }
+.mini-hist { border-top: 1px solid #1a1a1a; padding-top: 4px; margin-top: 6px; }
+.mini-hist-row { display: flex; gap: 2px; margin-bottom: 2px; opacity: 0.3; }
+.mini-dot { width: 5px; height: 5px; border-radius: 1px; }
 
-/* Specific History Section */
-.spec-history { background: #0a0e14; padding: 10px; border-radius: 8px; margin-top: 5px; border: 1px solid #222; }
-.spec-item { font-size: 11px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #1c2128; padding-bottom: 5px; }
-.spec-res-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px; flex: 1; }
-.spec-dot { height: 18px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 9px; background: #1a1a1a; }
-.sync-highlight { background: #444; outline: 1.5px solid var(--gold); }
+.numpad-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.num-btn { height: 45px; background: #21262d; border: 1px solid var(--border); color: #fff; border-radius: 8px; font-size: 18px; font-weight: bold; transition: transform 0.1s; }
+.num-btn:active { transform: scale(0.95); background: var(--blue); }
 
-/* Input Pad */
-.numpad-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
-.num-btn { height: 50px; background: #21262d; border: 1px solid var(--border); color: #fff; border-radius: 10px; font-size: 20px; font-weight: bold; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.num-btn:active { background: var(--blue); transform: scale(0.9); }
+.table-wrap { overflow-y: auto; max-height: 150px; background: #000; border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 9px; }
+td { padding: 8px 4px; border-bottom: 1px solid #222; text-align: center; }
 
-/* Live Items */
-.live-item { display: flex; justify-content: space-between; align-items: center; background: #1c2128; padding: 8px 12px; border-radius: 8px; margin-bottom: 5px; border-left: 4px solid var(--blue); }
-.dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-left: 3px; }
-
-.table-wrap { overflow-y: auto; max-height: 180px; background: #000; border-radius: 8px; }
-table { width: 100%; border-collapse: collapse; font-size: 11px; }
-td { padding: 10px 5px; border-bottom: 1px solid var(--border); text-align: center; }
-
-.reset-btn { background: var(--red); color: white; border: none; padding: 8px 15px; border-radius: 8px; font-size: 10px; cursor: pointer; font-weight: bold; }
-
-#copyModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; padding: 20px; box-sizing: border-box; }
-.modal-content { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid var(--gold); }
-textarea { width: 100%; height: 150px; background: #000; color: #00ff00; border: 1px solid #444; margin: 10px 0; font-family: monospace; padding: 10px; box-sizing: border-box; }
+#copyModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; padding: 20px; }
+.modal-content { background: var(--card); padding: 15px; border-radius: 15px; border: 1px solid var(--gold); max-width: 380px; margin: auto; margin-top: 40px; }
+textarea { width: 100%; height: 180px; background: #000; color: #0f0; margin: 10px 0; padding: 8px; box-sizing: border-box; font-family: monospace; font-size: 11px; }
+.btn-group { display: flex; gap: 5px; margin-bottom: 8px; }
+.btn-m { flex: 1; padding: 8px; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 10px; font-weight: bold; }
 </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="panel pred-box" id="mainPredBox">
-        <div style="font-size:11px; color:var(--gold); font-weight:bold; letter-spacing:1px;">LOCKED PREDICTION</div>
-        <div id="predDisplay" class="pred-val">-</div>
-        <div id="statusLabel" style="font-size:11px; color:#888; font-weight: bold;">WAITING...</div>
-        
-        <div class="step-grid" id="lockedSteps">
-            <script>for(let i=0;i<8;i++) document.write('<div class="step-box" id="step-'+i+'">'+(i+1)+'</div>');</script>
-        </div>
-
-        <div id="specSection" style="margin-top: 15px; text-align: left; display: none;">
-            <div style="font-size: 10px; color: var(--gold); margin-bottom: 8px; font-weight: bold; border-top: 1px solid #333; padding-top: 10px; display: flex; justify-content: space-between;">
-                <span>PREVIOUS <span id="specTitle"></span> RECORDS</span>
-                <span style="color:#555">SYNC ACTIVE</span>
-            </div>
-            <div id="specList" class="spec-history"></div>
+    <div class="panel" style="text-align: center; background: #000; border: 2px solid var(--gold); border-radius: 15px; padding: 12px;">
+        <h4 style="border:none; justify-content: center; color:#444;">CORE ENGINE + AI LAYER</h4>
+        <div id="predDisplay" style="font-size: 45px; font-weight: bold; color: var(--blue); margin: 5px 0;">-</div>
+        <div id="statusLabel" style="font-size:10px; color:#666; margin-bottom:8px;">READY</div>
+        <div class="step-grid" style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px;">
+            <script>for(let i=0;i<8;i++) document.write('<div class="step-box" style="height:28px; border:1px solid #444; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:10px; background:#222;" id="step-'+i+'">'+(i+1)+'</div>');</script>
         </div>
     </div>
 
     <div class="panel">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h4 style="border:none; margin:0;">INPUT RESULT</h4>
-            <button class="reset-btn" onclick="resetData()">RESET ALL</button>
+        <h4 style="color:var(--gold);">LIVE TRACKING (AI ANALYZING...)</h4>
+        <div id="liveMonitor" class="live-grid"></div>
+    </div>
+
+    <div class="panel">
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+            <span style="font-size:10px; color:var(--gold); font-weight:bold;">INPUT</span>
+            <div style="display:flex; gap:5px;">
+                <button onclick="undoInput()" style="background:#30363d; color:var(--gold); border:none; padding:4px 10px; border-radius:5px; font-size:10px; font-weight:bold;">UNDO</button>
+                <button onclick="resetData()" style="background:var(--red); color:white; border:none; padding:4px 10px; border-radius:5px; font-size:10px; font-weight:bold;">RESET</button>
+            </div>
         </div>
         <div class="numpad-grid">
             <script>for(let i=0;i<=9;i++) document.write(`<button class="num-btn" onclick="handleInput(${i})">${i}</button>`);</script>
@@ -108,37 +85,25 @@ textarea { width: 100%; height: 150px; background: #000; color: #00ff00; border:
     </div>
 
     <div class="panel">
-        <h4>LIVE TRACKING</h4>
-        <div id="liveMonitor"></div>
-    </div>
-
-    <div class="panel">
-        <h4>
-            <span>HISTORY LOG</span>
-            <button onclick="openCopyModal()" style="background:var(--green); color:white; border:none; padding:6px 12px; border-radius:6px; font-size:10px;">COPY DATA</button>
-        </h4>
-        <div class="table-wrap">
-            <table><tbody id="historyBody"></tbody></table>
-        </div>
+        <h4><span>HISTORY</span> <button onclick="openCopyModal()" style="background:var(--green); border:none; color:white; padding:4px 10px; border-radius:5px; font-size:10px;">COPY</button></h4>
+        <div class="table-wrap"><table><tbody id="historyBody"></tbody></table></div>
     </div>
 </div>
 
-<div id="copyModal">
-    <div class="modal-content">
-        <h4 style="color:var(--gold); justify-content:center;">EXCEL EXPORT</h4>
-        <button onclick="generateCopy('normal')" style="width:100%; padding:12px; margin-bottom:5px; background:var(--blue); color:white; border:none; border-radius:5px;">COPY NORMAL</button>
-        <button onclick="generateCopy('sorted')" style="width:100%; padding:12px; background:var(--gold); border:none; border-radius:5px;">COPY SORTED</button>
-        <textarea id="copyArea" readonly></textarea>
-        <div style="display:flex; gap:10px;">
-            <button onclick="doClipboardCopy()" style="flex:1; background:var(--green); color:white; border:none; padding:12px; border-radius:5px;">COPY NOW</button>
-            <button onclick="document.getElementById('copyModal').style.display='none'" style="flex:1; background:var(--red); color:white; border:none; padding:12px; border-radius:5px;">CLOSE</button>
-        </div>
+<div id="copyModal"><div class="modal-content">
+    <h4 style="justify-content:center; border:none;">EXPORT LOGS</h4>
+    <div class="btn-group">
+        <button class="btn-m" style="background:var(--blue);" onclick="generateCopy('normal')">SORT BY TIME</button>
+        <button class="btn-m" style="background:var(--gold); color:black;" onclick="generateCopy('sorted')">SORT BY ID</button>
     </div>
-</div>
+    <textarea id="copyArea" readonly></textarea>
+    <button onclick="doClipboardCopy()" style="width:100%; padding:10px; background:var(--green); border:none; color:white; border-radius:5px;">COPY TO CLIPBOARD</button>
+    <button onclick="document.getElementById('copyModal').style.display='none'" style="width:100%; padding:10px; background:#444; border:none; color:white; border-radius:5px; margin-top:5px;">CLOSE</button>
+</div></div>
 
 <script>
 const myPatterns = {
-    even: { 0:"BBBSSBBB", 1:"SBSSBBBB", 2:"BBBSSSSS", 3:"SBBBBSSB", 4:"BBBBSSBB", 5:"BBBSSSBB", 6:"BBBSSSBB", 7:"SBBSSBBS", 8:"BBBSSBBB", 9:"BBBSSBBB" },
+    even: { 0:"BBBSSBBB", 1:"SBSSBBBB", 2:"BBBSSSSB", 3:"SBBBBSSB", 4:"BBBBSSBB", 5:"BBBSSSBB", 6:"BBBSSSBB", 7:"SBBSSBBS", 8:"BBBSSBBB", 9:"BBBSSBBB" },
     odd: { 0:"SBBSSBSS", 1:"BBBSSBBS", 2:"BBBBSSSB", 3:"BBBBSSBS", 4:"BBBBSSBS", 5:"BSBBSSBS", 6:"BBBSSBBS", 7:"BBBSSBBB", 8:"BBBSSBBB", 9:"BBBBSSBB" }
 };
 
@@ -155,121 +120,124 @@ function saveData() {
     else localStorage.removeItem('lockedTrackId');
 }
 
-function resetData() {
-    if(confirm("ဒေတာအားလုံးကို ဖျက်မှာ သေချာပါသလား?")) {
-        localStorage.clear();
-        location.reload();
-    }
+function resetData() { if(confirm("Clear all data?")) { localStorage.clear(); location.reload(); } }
+
+function undoInput() {
+    if (rawInputs.length === 0) return;
+    rawInputs.pop();
+    if (activeTracks.length > 0) activeTracks.pop();
+    activeTracks.forEach(t => t.results.pop());
+    lockedTrackId = activeTracks.length > 0 ? activeTracks[activeTracks.length-1].id : null;
+    saveData(); renderUI();
 }
 
-function handleInput(currentNum) {
-    const actualBS = currentNum >= 5 ? "B" : "S";
-    let justHit = false;
-    let hitIndex = -1;
-
-    activeTracks.forEach(t => { 
-        if (t.results.length < 8) {
-            const isWin = actualBS === t.pattern[t.results.length];
-            t.results.push(isWin ? "✅" : "❌");
-            
-            // လက်ရှိ Locked ဖြစ်နေတဲ့ pattern မှာ မှန်သလား စစ်ဆေးခြင်း
-            if (t.id == lockedTrackId && isWin) {
-                justHit = true;
-                hitIndex = t.results.length - 1;
-            }
-        }
-    });
-
+function handleInput(num) {
+    const bs = num >= 5 ? "B" : "S";
+    activeTracks.forEach(t => { if (t.results.length < 8) t.results.push(bs === t.pattern[t.results.length] ? "✅" : "❌"); });
     if (lockedTrackId) {
         let locked = activeTracks.find(t => t.id == lockedTrackId);
-        if (locked && (locked.results[locked.results.length-1] === "✅" || locked.results.length === 8)) {
-            lockedTrackId = null;
-        }
+        if (locked && (locked.results[locked.results.length-1] === "✅" || locked.results.length === 8)) lockedTrackId = null;
     }
-
     if (rawInputs.length > 0) {
-        const type = (rawInputs[rawInputs.length - 1] % 2 === 0) ? 'even' : 'odd';
-        let newT = { id: Date.now()+Math.random(), digit: currentNum, type: type, pattern: myPatterns[type][currentNum], results: [], time: Date.now() };
+        const type = (rawInputs[rawInputs.length-1] % 2 === 0) ? 'even' : 'odd';
+        let newT = { id: Date.now()+Math.random(), digit: num, type: type, pattern: myPatterns[type][num], results: [] };
         activeTracks.push(newT);
         if (!lockedTrackId) lockedTrackId = newT.id;
     }
-
-    rawInputs.push(currentNum);
+    rawInputs.push(num);
     for (let i = activeTracks.length - 1; i >= 0; i--) {
         if (activeTracks[i].results.length === 8) historyLog.unshift(activeTracks.splice(i, 1)[0]);
     }
-    
-    saveData();
-    renderUI();
-
-    // မှန်ခဲ့ရင် Effect ပြရန်
-    if (justHit) {
-        const hitEl = document.getElementById(`step-${hitIndex}`);
-        hitEl.classList.add('hit-glow');
-        setTimeout(() => hitEl.classList.remove('hit-glow'), 600);
-    }
+    saveData(); renderUI();
 }
 
 function renderUI() {
     const locked = activeTracks.find(t => t.id == lockedTrackId);
-    const currentStepIndex = locked ? locked.results.length : -1;
-
-    document.getElementById('predDisplay').innerText = locked ? locked.pattern[currentStepIndex] : "-";
-    document.getElementById('statusLabel').innerText = locked ? `${locked.type.toUpperCase()}:${locked.digit} | STEP ${currentStepIndex+1}` : "WAITING FOR INPUT...";
-    
+    const stepIdx = locked ? locked.results.length : -1;
+    document.getElementById('predDisplay').innerText = locked ? locked.pattern[stepIdx] : "-";
+    document.getElementById('statusLabel').innerText = locked ? `ID:${locked.type[0].toUpperCase()}${locked.digit} | POS:${stepIdx+1}` : "WAITING";
     for(let i=0; i<8; i++) {
         let el = document.getElementById(`step-${i}`);
         let res = locked ? locked.results[i] : "";
-        el.className = `step-box ${res==='✅'?'hit':(res==='❌'?'miss':'')} ${i===currentStepIndex?'active-step':''}`;
+        el.style.background = res==='✅'?'var(--green)':(res==='❌'?'var(--red)':'#222');
+        el.style.border = (i===stepIdx) ? '1.5px solid var(--gold)' : '1px solid #444';
         el.innerText = res || (i+1);
     }
-
-    const specSec = document.getElementById('specSection');
-    if (locked) {
-        specSec.style.display = "block";
-        document.getElementById('specTitle').innerText = `${locked.type.toUpperCase()} ${locked.digit}`;
-        const filtered = historyLog.filter(h => h.type === locked.type && h.digit === locked.digit).slice(0, 3);
+    document.getElementById('liveMonitor').innerHTML = activeTracks.map(t => {
+        const isTriggered = !t.results.includes("✅") && t.results.length >= 3;
+        const sHist = historyLog.filter(h => h.type === t.type && h.digit === t.digit).slice(0, 2);
         
-        document.getElementById('specList').innerHTML = filtered.length > 0 ? filtered.map((h, idx) => `
-            <div class="spec-item">
-                <span style="color:var(--gold); width:15px; font-weight:bold;">${idx+1}.</span>
-                <div class="spec-res-grid">
-                    ${h.results.map((r, rIdx) => `
-                        <div class="spec-dot ${rIdx === currentStepIndex ? 'sync-highlight' : ''}" 
-                             style="color:${r === '✅' ? 'var(--green)' : 'var(--red)'}">
-                            ${r}
-                        </div>
-                    `).join('')}
-                </div>
-            </div>`).join('') : '<div style="font-size:10px; color:#555; text-align:center;">No previous patterns found.</div>';
-    } else {
-        specSec.style.display = "none";
-    }
+        // --- AI PREDICTION LAYER LOGIC ---
+        let aiAdvice = "Analyzing...";
+        let aiClass = "ai-wait";
+        
+        if (t.results.length === 4) { // Pos 5 Prediction
+            const patternA = t.results.slice(0, 4).join('');
+            if (!t.results.includes("✅")) {
+                aiAdvice = `🔥 SNIPER: BET ${t.pattern[4]}`;
+                aiClass = "ai-confirm";
+            } else {
+                aiAdvice = "Check Next...";
+            }
+        } else if (t.results.length === 5) { // Pos 6 Recovery
+            if (t.results[4] === "❌") {
+                const reversePred = t.pattern[5] === "B" ? "S" : "B";
+                aiAdvice = `🔄 REC-6: BET ${reversePred}`;
+                aiClass = "ai-recovery";
+            } else {
+                aiAdvice = "WIN AT POS 5";
+            }
+        } else if (t.results.length > 5) {
+            aiAdvice = "Completed/Wait";
+        }
+        // ---------------------------------
 
-    document.getElementById('liveMonitor').innerHTML = activeTracks.map(t => `
-        <div class="live-item">
-            <span style="font-size:11px; font-weight:bold; color:${t.id==lockedTrackId?'var(--gold)':'var(--blue)'}">${t.type[0].toUpperCase()}:${t.digit}</span>
-            <div>${t.results.map(r=>`<div class="dot" style="background:${r==='✅'?'var(--green)':'var(--red)'}"></div>`).join('')}${Array(8-t.results.length).fill(0).map(()=>`<div class="dot" style="background:#333"></div>`).join('')}</div>
-        </div>`).join('');
-
-    document.getElementById('historyBody').innerHTML = historyLog.slice(0,10).map(h => `
+        return `
+        <div class="live-card ${isTriggered ? 'signal-on' : ''}">
+            <div class="live-info">
+                <span style="color:${isTriggered ? 'var(--red)' : '#888'}">${t.type[0].toUpperCase()}:${t.digit} (P:${t.results.length+1})</span>
+                <span style="color:var(--gold); font-weight:900;">${t.pattern[t.results.length] || '-'}</span>
+            </div>
+            <div class="live-dots">
+                ${t.pattern.split('').map((p, i) => `
+                    <div class="dot-col">
+                        <div class="dot" style="background:${t.results[i] === '✅' ? 'var(--green)' : (t.results[i] === '❌' ? 'var(--red)' : '#222')}"></div>
+                        <div class="pos-num">${i+1}</div>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="ai-advice ${aiClass}">${aiAdvice}</div>
+            <div class="mini-hist">
+                ${sHist.map(h => `<div class="mini-hist-row">${h.results.map(r => `<div class="mini-dot" style="background:${r==='✅'?'var(--green)':'var(--red)'}"></div>`).join('')}</div>`).join('')}
+            </div>
+        </div>`;
+    }).join('');
+    document.getElementById('historyBody').innerHTML = historyLog.slice(0,20).map(h => `
         <tr>
-            <td style="font-weight:bold; color:var(--gold)">${h.type[0].toUpperCase()}:${h.digit}</td>
-            <td style="letter-spacing:1px; font-size:10px;">${h.results.join(' ')}</td>
-            <td style="color:${h.results.includes('✅')?'var(--green)':'var(--red)'}; font-weight:bold;">${h.results.includes('✅')?'WIN':'LOSS'}</td>
+            <td style="color:var(--gold); font-weight:bold;">${h.type[0].toUpperCase()}:${h.digit}</td>
+            <td style="letter-spacing:1px; color:#777;">${h.results.join('')}</td>
+            <td style="color:${h.results.includes('✅')?'var(--green)':'var(--red)'};">${h.results.includes('✅')?'WIN':'LOSS'}</td>
         </tr>`).join('');
 }
 
 function openCopyModal() { document.getElementById('copyModal').style.display = 'block'; generateCopy('normal'); }
+
 function generateCopy(mode) {
-    let data = [...historyLog];
-    if (mode === 'sorted') data.sort((a,b) => a.digit - b.digit);
-    let text = "Type\tDigit\tSteps\tResult\n";
-    data.forEach(h => text += `${h.type}\t${h.digit}\t${h.results.join('\t')}\t${h.results.includes('✅')?'WIN':'LOSS'}\n`);
+    let list = [...historyLog];
+    if (mode === 'sorted') {
+        list.sort((a, b) => {
+            if (a.type !== b.type) return a.type.localeCompare(b.type);
+            return a.digit - b.digit;
+        });
+    }
+    let text = "ID\tRECORD\tSTAT\n";
+    list.forEach(h => {
+        text += `${h.type[0].toUpperCase()}:${h.digit}\t${h.results.join('')}\t${h.results.includes('✅')?'W':'L'}\n`;
+    });
     document.getElementById('copyArea').value = text;
 }
-function doClipboardCopy() { document.getElementById('copyArea').select(); document.execCommand('copy'); alert("Copied!"); }
 
+function doClipboardCopy() { document.getElementById('copyArea').select(); document.execCommand('copy'); alert("Copied!"); }
 renderUI();
 </script>
 </body>
