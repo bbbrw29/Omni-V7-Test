@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VIP STEALTH PRO - AI ENHANCED</title>
+<style>
+:root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --blue: #58a6ff; --gold: #d29922; --green: #238636; --red: #f85149; --purple: #a371f7; }
+body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 8px; margin: 0; }
+.container { max-width: 420px; margin: auto; }
+.panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px; margin-bottom: 8px; }
+
+h4 { margin: 0 0 8px 0; color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 5px; font-size: 10px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+
+/* AI STRATEGY LOG STYLE (FIT HEIGHT & SCROLL) */
+.log-box {
+    background: #000;
+    border: 1px solid #222;
+    border-radius: 8px;
+    height: 140px; /* Fixed Height */
+    overflow-y: auto; /* Scrollable */
+    padding: 8px;
+}
+.log-entry {
+    font-family: monospace;
+    font-size: 11px;
+    padding: 4px 0;
+    border-bottom: 1px solid #111;
+    display: flex;
+    justify-content: space-between;
+}
+
+@keyframes soft-pulse {
+    0% { border-color: var(--border); }
+    50% { border-color: var(--red); box-shadow: 0 0 10px rgba(248, 81, 73, 0.4); }
+    100% { border-color: var(--border); }
+}
+.signal-on { animation: soft-pulse 1.2s infinite; border-width: 1.5px !important; }
+
+.live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.live-card { background: #000; padding: 8px; border-radius: 10px; border: 1.5px solid var(--border); display: flex; flex-direction: column; }
+.live-info { display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; margin-bottom: 4px; border-bottom: 1px solid #222; }
+.live-dots { display: flex; gap: 2px; margin-top: 2px; }
+.dot-col { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
+.dot { width: 100%; height: 6px; border-radius: 1px; }
+
+.ai-advice-box { 
+    margin: 8px 0; padding: 6px; border-radius: 6px; font-size: 10px; font-weight: 900; text-align: center; letter-spacing: 0.5px; border: 1px solid rgba(255,255,255,0.1);
+}
+.status-waiting { background: #1a1a1a; color: #444; }
+.status-sniper { background: var(--green); color: white; animation: flash 0.8s infinite; }
+.status-recovery { background: var(--gold); color: black; border: 1px solid white; box-shadow: 0 0 5px var(--gold); }
+.status-win { background: #002b00; color: var(--green); }
+
+@keyframes flash { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+.mini-hist { border-top: 1px solid #1a1a1a; padding-top: 4px; margin-top: auto; }
+.mini-hist-row { display: flex; gap: 2px; margin-bottom: 2px; opacity: 0.3; }
+.mini-dot { width: 5px; height: 5px; border-radius: 1px; }
+
+.numpad-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.num-btn { height: 45px; background: #21262d; border: 1px solid var(--border); color: #fff; border-radius: 8px; font-size: 18px; font-weight: bold; transition: transform 0.1s; }
+.num-btn:active { transform: scale(0.95); background: var(--blue); }
+
+.table-wrap { overflow-y: auto; max-height: 150px; background: #000; border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 9px; }
+td { padding: 8px 4px; border-bottom: 1px solid #222; text-align: center; }
+
+#copyModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; padding: 20px; }
+.modal-content { background: var(--card); padding: 15px; border-radius: 15px; border: 1px solid var(--gold); max-width: 380px; margin: auto; margin-top: 40px; }
+textarea { width: 100%; height: 180px; background: #000; color: #0f0; margin: 10px 0; padding: 8px; box-sizing: border-box; font-family: monospace; font-size: 11px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="panel" style="text-align: center; background: #000; border: 2px solid var(--gold); border-radius: 15px; padding: 12px;">
+        <h4 style="border:none; justify-content: center; color:#444;">CORE ENGINE + AI LAYER</h4>
+        <div id="predDisplay" style="font-size: 45px; font-weight: bold; color: var(--blue); margin: 5px 0;">-</div>
+        <div id="statusLabel" style="font-size:10px; color:#666; margin-bottom:8px;">READY</div>
+        <div class="step-grid" style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px;">
+            <script>for(let i=0;i<8;i++) document.write('<div class="step-box" style="height:28px; border:1px solid #444; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:10px; background:#222;" id="step-'+i+'">'+(i+1)+'</div>');</script>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h4 style="color:var(--purple);">AI STRATEGY LOG</h4>
+        <div id="strategyLog" class="log-box">
+            <div style="color:#333; text-align:center; margin-top:50px; font-size:10px;">Waiting for Sniper/Rec events...</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h4 style="color:var(--gold);">LIVE TRACKING (5 & 6 ANALYZER)</h4>
+        <div id="liveMonitor" class="live-grid"></div>
+    </div>
+
+    <div class="panel">
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+            <span style="font-size:10px; color:var(--gold); font-weight:bold;">INPUT</span>
+            <div style="display:flex; gap:5px;">
+                <button onclick="undoInput()" style="background:#30363d; color:var(--gold); border:none; padding:4px 10px; border-radius:5px; font-size:10px; font-weight:bold;">UNDO</button>
+                <button onclick="resetData()" style="background:var(--red); color:white; border:none; padding:4px 10px; border-radius:5px; font-size:10px; font-weight:bold;">RESET</button>
+            </div>
+        </div>
+        <div class="numpad-grid">
+            <script>for(let i=0;i<=9;i++) document.write(`<button class="num-btn" onclick="handleInput(${i})">${i}</button>`);</script>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h4><span>HISTORY</span> <button onclick="openCopyModal()" style="background:var(--green); border:none; color:white; padding:4px 10px; border-radius:5px; font-size:10px;">COPY</button></h4>
+        <div class="table-wrap"><table><tbody id="historyBody"></tbody></table></div>
+    </div>
+</div>
+
+<div id="copyModal"><div class="modal-content">
+    <textarea id="copyArea" readonly></textarea>
+    <button onclick="doClipboardCopy()" style="width:100%; padding:10px; background:var(--green); border:none; color:white; border-radius:5px;">COPY</button>
+    <button onclick="document.getElementById('copyModal').style.display='none'" style="width:100%; padding:10px; background:#444; border:none; color:white; border-radius:5px; margin-top:5px;">CLOSE</button>
+</div></div>
+
+<script>
+const myPatterns = {
+    even: { 0:"BBBSSBBB", 1:"SBSSBBBB", 2:"BBBSSSSB", 3:"SBBBBSSB", 4:"BBBBSSBB", 5:"BBBSSSBB", 6:"BBBSSSBB", 7:"SBBSSBBS", 8:"BBBSSBBB", 9:"BBBSSBBB" },
+    odd: { 0:"SBBSSBSS", 1:"BBBSSBBS", 2:"BBBBSSSB", 3:"BBBBSSBS", 4:"BBBBSSBS", 5:"BSBBSSBS", 6:"BBBSSBBS", 7:"BBBSSBBB", 8:"BBBSSBBB", 9:"BBBBSSBB" }
+};
+
+let rawInputs = JSON.parse(localStorage.getItem('rawInputs')) || [];
+let activeTracks = JSON.parse(localStorage.getItem('activeTracks')) || [];
+let historyLog = JSON.parse(localStorage.getItem('historyLog')) || [];
+let aiStrategyLog = JSON.parse(localStorage.getItem('aiStrategyLog')) || [];
+let lockedTrackId = localStorage.getItem('lockedTrackId') || null;
+
+function saveData() {
+    localStorage.setItem('rawInputs', JSON.stringify(rawInputs));
+    localStorage.setItem('activeTracks', JSON.stringify(activeTracks));
+    localStorage.setItem('historyLog', JSON.stringify(historyLog));
+    localStorage.setItem('aiStrategyLog', JSON.stringify(aiStrategyLog));
+    if (lockedTrackId) localStorage.setItem('lockedTrackId', lockedTrackId);
+    else localStorage.removeItem('lockedTrackId');
+}
+
+function resetData() { if(confirm("Clear all?")) { localStorage.clear(); location.reload(); } }
+
+function undoInput() {
+    if (rawInputs.length === 0) return;
+    rawInputs.pop();
+    if (activeTracks.length > 0) activeTracks.pop();
+    activeTracks.forEach(t => t.results.pop());
+    lockedTrackId = activeTracks.length > 0 ? activeTracks[activeTracks.length-1].id : null;
+    saveData(); renderUI();
+}
+
+function handleInput(num) {
+    const bs = num >= 5 ? "B" : "S";
+    activeTracks.forEach(t => { 
+        if (t.results.length < 8) {
+            let target = t.pattern[t.results.length];
+            if(t.results.length === 5 && t.results[4] === "❌") {
+                target = (t.pattern[5] === "B" ? "S" : "B");
+            }
+            t.results.push(bs === target ? "✅" : "❌"); 
+        }
+    });
+
+    for (let i = activeTracks.length - 1; i >= 0; i--) {
+        if (activeTracks[i].results.length === 8) {
+            let h = activeTracks.splice(i, 1)[0];
+            historyLog.unshift(h);
+            
+            // AI LOGIC FOR STRATEGY LOG
+            let entry = "";
+            if (h.results[4] === "✅" && !h.results.slice(0,4).includes("✅")) entry = "SNIPER HIT ✅";
+            else if (h.results[4] === "❌") {
+                if (h.results[5] === "✅") entry = "REC HIT ✅";
+                else if (h.results[5] === "❌") entry = "REC FAIL ❌";
+            }
+            if (entry) aiStrategyLog.unshift(`${aiStrategyLog.length + 1}. ${entry}`);
+        }
+    }
+
+    if (lockedTrackId) {
+        let locked = activeTracks.find(t => t.id == lockedTrackId);
+        if (locked && (locked.results[locked.results.length-1] === "✅" || locked.results.length === 8)) lockedTrackId = null;
+    }
+    if (rawInputs.length > 0) {
+        const type = (rawInputs[rawInputs.length-1] % 2 === 0) ? 'even' : 'odd';
+        let newT = { id: Date.now()+Math.random(), digit: num, type: type, pattern: myPatterns[type][num], results: [] };
+        activeTracks.push(newT);
+        if (!lockedTrackId) lockedTrackId = newT.id;
+    }
+    rawInputs.push(num);
+    saveData(); renderUI();
+}
+
+function renderUI() {
+    const locked = activeTracks.find(t => t.id == lockedTrackId);
+    const stepIdx = locked ? locked.results.length : -1;
+    
+    let currentPred = locked ? locked.pattern[stepIdx] : "-";
+    if (locked && stepIdx === 5 && locked.results[4] === "❌") {
+        currentPred = (locked.pattern[5] === "B" ? "S" : "B");
+    }
+    document.getElementById('predDisplay').innerText = currentPred;
+    document.getElementById('statusLabel').innerText = locked ? `ID:${locked.type[0].toUpperCase()}${locked.digit} | POS:${stepIdx+1}` : "WAITING";
+    
+    for(let i=0; i<8; i++) {
+        let el = document.getElementById(`step-${i}`);
+        let res = locked ? locked.results[i] : "";
+        el.style.background = res==='✅'?'var(--green)':(res==='❌'?'var(--red)':'#222');
+        el.innerText = res || (i+1);
+    }
+
+    // RENDER STRATEGY LOG
+    const logBox = document.getElementById('strategyLog');
+    if (aiStrategyLog.length > 0) {
+        logBox.innerHTML = aiStrategyLog.map(item => {
+            let color = item.includes('✅') ? 'var(--green)' : 'var(--red)';
+            return `<div class="log-entry" style="color:${color}">${item}</div>`;
+        }).join('');
+    }
+
+    document.getElementById('liveMonitor').innerHTML = activeTracks.map(t => {
+        let msg = "PENDING", css = "status-waiting";
+        if (t.results.length === 4 && !t.results.includes("✅")) { msg = "🔥 SNIPER"; css = "status-sniper"; }
+        else if (t.results.length === 5 && t.results[4] === "❌") { msg = "🔄 RECOVERY"; css = "status-recovery"; }
+        return `<div class="live-card"><div class="live-info"><span>${t.type[0].toUpperCase()}:${t.digit}</span></div><div class="ai-advice-box ${css}">${msg}</div></div>`;
+    }).join('');
+
+    document.getElementById('historyBody').innerHTML = historyLog.slice(0,20).map(h => `<tr><td style="color:var(--gold);">${h.type[0].toUpperCase()}:${h.digit}</td><td>${h.results.join('')}</td><td style="color:${h.results.includes('✅')?'var(--green)':'var(--red)'};">${h.results.includes('✅')?'W':'L'}</td></tr>`).join('');
+}
+
+function openCopyModal() { document.getElementById('copyArea').value = aiStrategyLog.join('\n'); document.getElementById('copyModal').style.display='block'; }
+function doClipboardCopy() { document.getElementById('copyArea').select(); document.execCommand('copy'); alert("Copied!"); }
+renderUI();
+</script>
+</body>
+</html>
