@@ -152,7 +152,8 @@ function handleInput(num) {
 
 function createTrack(n1, n2, isLock) {
     const cat = n1.toString() + n2.toString();
-    if (myPatterns[cat] && !activeTracks.some(t => t.digit === cat)) {
+    // DUPLICATE PREVENTION REMOVED: Allows 7 cards to appear continuously
+    if (myPatterns[cat]) {
         let newT = { id: Date.now() + Math.random(), digit: cat, pattern: myPatterns[cat], results: [], wasLocked: isLock };
         activeTracks.push(newT);
         if (isLock || !lockedTrackId) lockedTrackId = newT.id;
@@ -165,7 +166,6 @@ function renderUI() {
     document.getElementById('predDisplay').innerText = (locked && locked.pattern[stepIdx]) ? locked.pattern[stepIdx] : "-";
     document.getElementById('statusLabel').innerText = locked ? `LOCKED: ${locked.digit}` : "WAITING...";
 
-    // RECENT 5 DISPLAY UPDATED
     const last5 = rawInputs.slice(-5);
     const recentHTML = [0,1,2,3,4].map(i => {
         const val = last5[i] !== undefined ? last5[i] : "-";
@@ -195,8 +195,17 @@ function renderUI() {
         </div>`;
     }).join('');
 
-    document.getElementById('historyBody').innerHTML = historyLog.slice(0, 100).map((h, index) => `
-        <tr><td>${historyLog.length - index}</td><td>${h.wasLocked ? '🔒' : '🔓'}${h.digit}</td><td>${h.results.join('')}</td><td style="color:${h.results.includes('✅')?'var(--green)':'var(--red)'}">${h.results.includes('✅')?'WIN':'LOSS'}</td></tr>`).join('');
+    // HISTORY LOG WITH LOCKED/ACTIVE ICONS
+    document.getElementById('historyBody').innerHTML = historyLog.slice(0, 100).map((h, index) => {
+        const statusIcon = h.wasLocked ? '<span style="color:var(--gold);">🔒</span>' : '<span style="color:var(--silver); opacity:0.6;">🔓</span>';
+        return `
+        <tr>
+            <td>${historyLog.length - index}</td>
+            <td style="text-align:left; padding-left:10px;">${statusIcon} ${h.digit}</td>
+            <td>${h.results.join('')}</td>
+            <td style="color:${h.results.includes('✅')?'var(--green)':'var(--red)'}; font-weight:bold;">${h.results.includes('✅')?'WIN':'LOSS'}</td>
+        </tr>`;
+    }).join('');
 }
 
 function copyHistory() {
