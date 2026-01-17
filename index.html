@@ -11,36 +11,17 @@ body { font-family: sans-serif; background: var(--bg); color: var(--text); paddi
 .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px; margin-bottom: 8px; }
 h4 { margin: 0 0 5px 0; color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 5px; font-size: 10px; }
 
-/* --- RECENT INPUTS NEW DESIGN --- */
 .recent-wrapper { 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    gap: 8px; 
-    margin-top: 10px; 
-    padding: 6px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; padding: 6px;
+    background: rgba(0,0,0,0.3); border-radius: 8px;
 }
 .recent-label { font-size: 9px; color: var(--silver); text-transform: uppercase; font-weight: bold; }
 .num-circle { 
-    width: 22px; 
-    height: 22px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    border-radius: 50%; 
-    background: #21262d; 
-    border: 1px solid var(--border);
-    font-size: 12px; 
-    font-weight: bold;
-    color: var(--text);
+    width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; 
+    border-radius: 50%; background: #21262d; border: 1px solid var(--border);
+    font-size: 12px; font-weight: bold; color: var(--text);
 }
-.num-circle.latest { 
-    border-color: var(--blue); 
-    color: var(--blue); 
-    box-shadow: 0 0 5px rgba(88, 166, 255, 0.4);
-}
+.num-circle.latest { border-color: var(--blue); color: var(--blue); box-shadow: 0 0 5px rgba(88, 166, 255, 0.4); }
 
 .live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
 .live-card { background: #000; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--border); position: relative; }
@@ -62,9 +43,10 @@ td { padding: 8px 4px; border-bottom: 1px solid #111; text-align: center; }
 
 .copy-btn { background: var(--blue); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 10px; cursor: pointer; float: right; margin-bottom: 5px; }
 
-.numpad-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
-.num-btn { height: 40px; background: #21262d; border: 1px solid var(--border); color: #fff; border-radius: 6px; font-size: 16px; font-weight: bold; }
-.undo-btn { background: #30363d !important; color: var(--gold) !important; font-size: 11px !important; }
+/* Keyboard Layout Update */
+.numpad-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.num-btn { height: 45px; background: #21262d; border: 1px solid var(--border); color: #fff; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
+.undo-btn { background: #30363d !important; color: var(--gold) !important; font-size: 12px !important; }
 </style>
 </head>
 <body>
@@ -92,13 +74,19 @@ td { padding: 8px 4px; border-bottom: 1px solid #111; text-align: center; }
 
     <div class="panel">
         <div class="numpad-grid">
-            <script>
-                for(let i=1; i<=9; i++) document.write(`<button class="num-btn" onclick="handleInput(${i})">${i}</button>`);
-                document.write(`<button class="num-btn undo-btn" onclick="undoInput()">UNDO</button>`);
-                document.write(`<button class="num-btn" onclick="handleInput(0)">0</button>`);
-            </script>
+            <button class="num-btn" onclick="handleInput(1)">1</button>
+            <button class="num-btn" onclick="handleInput(2)">2</button>
+            <button class="num-btn" onclick="handleInput(3)">3</button>
+            <button class="num-btn" onclick="handleInput(4)">4</button>
+            <button class="num-btn" onclick="handleInput(5)">5</button>
+            <button class="num-btn" onclick="handleInput(6)">6</button>
+            <button class="num-btn" onclick="handleInput(7)">7</button>
+            <button class="num-btn" onclick="handleInput(8)">8</button>
+            <button class="num-btn" onclick="handleInput(9)">9</button>
+            <button class="num-btn" onclick="handleInput(0)">0</button>
+            <button class="num-btn undo-btn" style="grid-column: span 5; height: 40px;" onclick="undoInput()">UNDO</button>
         </div>
-        <button onclick="resetData()" style="width:100%; background:var(--red); color:white; border:none; padding:10px; border-radius:5px; font-size:11px; font-weight:bold; margin-top:8px;">RESET ALL</button>
+        <button onclick="resetData()" style="width:100%; background:var(--red); color:white; border:none; padding:12px; border-radius:8px; font-size:12px; font-weight:bold; margin-top:10px;">RESET ALL</button>
     </div>
 
     <div class="panel">
@@ -116,16 +104,25 @@ td { padding: 8px 4px; border-bottom: 1px solid #111; text-align: center; }
 <script>
 const myPatterns = { "00": "SBSSSSBS", "01": "SBBSBSBB", "02": "BBSBSSSS", "03": "BSBSSSBB", "04": "SSBBBBSB", "05": "BSSBBSSS", "06": "SBBBBBSB", "07": "BBBBBBSS", "08": "BSSSBBBB", "09": "SSSSSSSB", "10": "BSBSBBBS", "11": "SBBSSSBS", "12": "BSSSBSSS", "13": "BBSBSSBB", "14": "BBBSBBBS", "15": "SBSBSBSB", "16": "SBSSBSBS", "17": "BSSBBBBB", "18": "BBSSSBSB", "19": "BSSBBBBB", "20": "BBBBBBBB", "21": "BBBSSSSB", "22": "SBSSSSSS", "23": "BSBSBBSB", "24": "BSBSBSBB", "25": "BBSBBSSB", "26": "SBSBSSBB", "27": "SSBBBBSB", "28": "SBBBSBSB", "29": "SBSBSBSB", "30": "SSSBSBSS", "31": "SSSBBBBS", "32": "BBBBBBBS", "33": "BSSBSSBS", "34": "BBBSSBSB", "35": "BBSSBSSS", "36": "SSBBSBBB", "37": "BSBBSBSB", "38": "BSBBBSBB", "39": "SSSBBSSB", "40": "BBBSSSSB", "41": "SBSSBSSS", "42": "BBSBSBBB", "43": "BBSBBBSB", "44": "SSBBSSBB", "45": "SBBSBBSB", "46": "SSSBBSBS", "47": "SBBSBBBB", "48": "BSSSSSBB", "49": "BBBSSBBB", "50": "BSSBBBBS", "51": "BBSBSBBB", "52": "SSBBSSSS", "53": "SSBSBBSS", "54": "SBBBSSSS", "55": "SSSSSSSS", "56": "BBBSBBBS", "57": "BBBSSSBB", "58": "SBSBSSSB", "59": "BBSBSBBB", "60": "SBBSBBSB", "61": "SBBSBSSB", "62": "BBBBBBSS", "63": "SBSSBSBB", "64": "BBSSSSBB", "65": "BSBBBSBS", "66": "BSBSSBSB", "67": "BSSBSBSS", "68": "BBBBSBBS", "69": "BBSSSBSS", "70": "SSSBBSSB", "71": "BBBBSSBB", "72": "BSBBBSSB", "73": "BBBBBSBS", "74": "BBBSBSSB", "75": "SSBBBSBS", "76": "SSSSSBBS", "77": "SSBBBSBS", "78": "BBBBBBSS", "79": "BSBBBSSS", "80": "BBSSBBSS", "81": "BSSSBSBS", "82": "BBBSBSSB", "83": "BSSSSBSS", "84": "BBSBBSBB", "85": "SSBBBSBB", "86": "BBSBSSBB", "87": "BBSSBSSS", "88": "SSBSSBBS", "89": "BBSSBSBB", "90": "SBBSSSSS", "91": "SSBBSBSB", "92": "BSBBBBSB", "93": "BSSSBBBB", "94": "BSSBSBBS", "95": "SSSSSBSS", "96": "BSBSSSBB", "97": "SBSBBSSB", "98": "BBSBSSBB", "99": "BBSSSSBB" };
 
-let rawInputs = [];
-let activeTracks = [];
-let historyLog = [];
-let lockedTrackId = null;
+// LocalStorage မှ Data များကို ပြန်ခေါ်ယူခြင်း
+let rawInputs = JSON.parse(localStorage.getItem('rawInputs')) || [];
+let activeTracks = JSON.parse(localStorage.getItem('activeTracks')) || [];
+let historyLog = JSON.parse(localStorage.getItem('historyLog')) || [];
+let lockedTrackId = localStorage.getItem('lockedTrackId') || null;
+
+function saveData() {
+    localStorage.setItem('rawInputs', JSON.stringify(rawInputs));
+    localStorage.setItem('activeTracks', JSON.stringify(activeTracks));
+    localStorage.setItem('historyLog', JSON.stringify(historyLog));
+    localStorage.setItem('lockedTrackId', lockedTrackId);
+}
 
 function undoInput() {
     if (rawInputs.length === 0) return;
     rawInputs.pop();
     activeTracks.forEach(t => { if (t.results.length > 0) t.results.pop(); });
-    activeTracks = activeTracks.filter(t => t.results.length > 0 || t.id === lockedTrackId);
+    activeTracks = activeTracks.filter(t => t.results.length > 0 || t.id == lockedTrackId);
+    saveData();
     renderUI();
 }
 
@@ -134,7 +131,7 @@ function handleInput(num) {
     activeTracks.forEach(t => { if (t.results.length < 8) t.results.push(bs === t.pattern[t.results.length] ? "✅" : "❌"); });
     let lockCreated = false;
     if (lockedTrackId) {
-        let locked = activeTracks.find(t => t.id === lockedTrackId);
+        let locked = activeTracks.find(t => t.id == lockedTrackId);
         if (locked && (locked.results[locked.results.length-1] === "✅" || locked.results.length === 8)) {
             const p1 = rawInputs[rawInputs.length - 1];
             lockedTrackId = null;
@@ -147,12 +144,12 @@ function handleInput(num) {
     for (let i = activeTracks.length - 1; i >= 0; i--) {
         if (activeTracks[i].results.length === 8) historyLog.unshift(activeTracks.splice(i, 1)[0]);
     }
+    saveData();
     renderUI();
 }
 
 function createTrack(n1, n2, isLock) {
     const cat = n1.toString() + n2.toString();
-    // DUPLICATE PREVENTION REMOVED: Allows 7 cards to appear continuously
     if (myPatterns[cat]) {
         let newT = { id: Date.now() + Math.random(), digit: cat, pattern: myPatterns[cat], results: [], wasLocked: isLock };
         activeTracks.push(newT);
@@ -161,7 +158,7 @@ function createTrack(n1, n2, isLock) {
 }
 
 function renderUI() {
-    const locked = activeTracks.find(t => t.id === lockedTrackId);
+    const locked = activeTracks.find(t => t.id == lockedTrackId);
     const stepIdx = locked ? locked.results.length : -1;
     document.getElementById('predDisplay').innerText = (locked && locked.pattern[stepIdx]) ? locked.pattern[stepIdx] : "-";
     document.getElementById('statusLabel').innerText = locked ? `LOCKED: ${locked.digit}` : "WAITING...";
@@ -183,7 +180,7 @@ function renderUI() {
     }
 
     document.getElementById('liveMonitor').innerHTML = activeTracks.map(t => {
-        const isLock = t.id === lockedTrackId;
+        const isLock = t.id == lockedTrackId;
         const isUnl = t.wasLocked && !isLock;
         return `
         <div class="live-card ${isLock ? 'current-lock' : (isUnl ? 'unlocked-card' : '')}">
@@ -195,16 +192,9 @@ function renderUI() {
         </div>`;
     }).join('');
 
-    // HISTORY LOG WITH LOCKED/ACTIVE ICONS
     document.getElementById('historyBody').innerHTML = historyLog.slice(0, 100).map((h, index) => {
-        const statusIcon = h.wasLocked ? '<span style="color:var(--gold);">🔒</span>' : '<span style="color:var(--silver); opacity:0.6;">🔓</span>';
-        return `
-        <tr>
-            <td>${historyLog.length - index}</td>
-            <td style="text-align:left; padding-left:10px;">${statusIcon} ${h.digit}</td>
-            <td>${h.results.join('')}</td>
-            <td style="color:${h.results.includes('✅')?'var(--green)':'var(--red)'}; font-weight:bold;">${h.results.includes('✅')?'WIN':'LOSS'}</td>
-        </tr>`;
+        const icon = h.wasLocked ? '<span style="color:var(--gold)">🔒</span>' : '<span style="color:var(--silver); opacity:0.5;">🔓</span>';
+        return `<tr><td>${historyLog.length - index}</td><td style="text-align:left; padding-left:10px;">${icon} ${h.digit}</td><td>${h.results.join('')}</td><td style="color:${h.results.includes('✅')?'var(--green)':'var(--red)'}; font-weight:bold;">${h.results.includes('✅')?'WIN':'LOSS'}</td></tr>`;
     }).join('');
 }
 
@@ -215,7 +205,13 @@ function copyHistory() {
     alert("Copied!");
 }
 
-function resetData() { if(confirm("RESET ALL?")) { rawInputs=[]; activeTracks=[]; historyLog=[]; lockedTrackId=null; renderUI(); } }
+function resetData() { 
+    if(confirm("RESET ALL?")) { 
+        rawInputs=[]; activeTracks=[]; historyLog=[]; lockedTrackId=null; 
+        localStorage.clear();
+        renderUI(); 
+    } 
+}
 renderUI();
 </script>
 </body>
