@@ -48,7 +48,8 @@ h4 { margin: 0 0 5px 0; color: var(--gold); border-bottom: 1px solid var(--borde
 
 .live-info { display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-bottom: 6px; color: #fff; font-weight: 900; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
 .live-dots { display: flex; gap: 2px; }
-.dot { flex: 1; height: 5px; border-radius: 1.5px; background: rgba(255,255,255,0.2); border: 0.5px solid rgba(0,0,0,0.1); }
+/* အမှန်အမှားပြကွက်ကို ပိုကြီးအောင်ပြင်သည် */
+.dot { flex: 1; height: 8px; border-radius: 1.5px; background: rgba(0,0,0,0.3); border: 1px solid rgba(0,0,0,0.2); transition: background 0.2s; }
 
 .history-container { height: 280px; overflow-y: auto; background: #000; border: 1px solid #222; border-radius: 8px; }
 table { width: 100%; border-collapse: collapse; font-size: 11px; }
@@ -123,7 +124,6 @@ let rawInputs = JSON.parse(localStorage.getItem('rawInputs')) || [];
 let activeTracks = JSON.parse(localStorage.getItem('activeTracks')) || [];
 let historyLog = JSON.parse(localStorage.getItem('historyLog')) || [];
 let lockedTrackId = localStorage.getItem('lockedTrackId') || null;
-// အရောင်အစီအစဉ်အတွက် global counter
 let trackCounter = parseInt(localStorage.getItem('trackCounter')) || 0;
 
 function saveData() {
@@ -159,7 +159,6 @@ function handleInput(num) {
 function createTrack(n1, n2, isLock) {
     const cat = n1.toString() + n2.toString();
     if (myPatterns[cat]) {
-        // trackCounter ကိုသုံးပြီး အရောင်ရွေးချယ်ခြင်း (နံပါတ်တူရင်တောင် အရောင်မတူစေရန်)
         const colorIdx = trackCounter % 8;
         let newT = { 
             id: Date.now() + Math.random(), 
@@ -170,7 +169,7 @@ function createTrack(n1, n2, isLock) {
             color: cardColors[colorIdx] 
         };
         activeTracks.push(newT);
-        trackCounter++; // counter တိုးပေးရန်
+        trackCounter++;
         if (isLock || !lockedTrackId) lockedTrackId = newT.id;
     }
 }
@@ -192,7 +191,7 @@ function renderUI() {
     for(let i=0; i<8; i++) {
         let el = document.getElementById(`step-${i}`);
         let res = locked ? locked.results[i] : "";
-        el.style.background = res==='✅'?'var(--green)':(res==='❌'?'var(--red)':'#111');
+        el.style.background = res==='✅'?'#00ff00':(res==='❌'?'#ff0000':'#111');
         el.style.border = (i===stepIdx) ? '1.5px solid var(--gold)' : '1px solid #333';
         el.innerText = res || (i+1);
     }
@@ -204,9 +203,14 @@ function renderUI() {
         <div class="live-card ${isLock ? 'current-lock' : (isUnl ? 'unlocked-card' : '')}" style="background-color: ${t.color || '#161b22'}">
             <div class="live-info">
                 <span><span class="status-tag">${isLock ? '🔒' : (isUnl ? '🔓' : 'A')}</span>${t.digit}</span>
-                <span style="color:#ffffff; font-size:14px; text-shadow: 1px 1px 2px #000;">${t.pattern[t.results.length] || 'END'}</span>
+                <span style="color:#ffffff; font-size:16px; font-weight:bold; text-shadow: 1px 1px 3px #000; background:rgba(0,0,0,0.3); padding:0 4px; border-radius:3px;">${t.pattern[t.results.length] || 'END'}</span>
             </div>
-            <div class="live-dots">${t.pattern.split('').map((p, i) => `<div class="dot" style="background:${t.results[i] === '✅' ? '#ffffff' : (t.results[i] === '❌' ? '#000000' : 'rgba(255,255,255,0.2)')}"></div>`).join('')}</div>
+            <div class="live-dots">${t.pattern.split('').map((p, i) => {
+                let dotCol = 'rgba(255,255,255,0.2)';
+                if(t.results[i] === '✅') dotCol = '#00ff00'; // Neon Green
+                if(t.results[i] === '❌') dotCol = '#ff0000'; // Bright Red
+                return `<div class="dot" style="background:${dotCol}; box-shadow: ${t.results[i] ? '0 0 4px rgba(0,0,0,0.4)' : 'none'}"></div>`;
+            }).join('')}</div>
         </div>`;
     }).join('');
 
@@ -220,7 +224,6 @@ function undoInput() {
     if (rawInputs.length === 0) return;
     rawInputs.pop();
     activeTracks.forEach(t => { if (t.results.length > 0) t.results.pop(); });
-    // undo လုပ်ရင် counter ပြန်လျှော့နိုင်သော်လည်း logic ရှုပ်ထွေးနိုင်၍ ဒီတိုင်းထားခြင်းက ပိုစိတ်ချရပါသည်
     activeTracks = activeTracks.filter(t => t.results.length > 0 || t.id == lockedTrackId);
     saveData();
     renderUI();
