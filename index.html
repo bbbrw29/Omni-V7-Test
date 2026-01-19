@@ -117,28 +117,21 @@ td { padding: 8px 4px; border-bottom: 1px solid #111; text-align: center; }
 <script>
 const myPatterns = { "00": "SBSSSSBS", "01": "SBBSBSBB", "02": "BBSBSSSS", "03": "BSBSSSBB", "04": "SSBBBBSB", "05": "BSSBBSSS", "06": "SBBBBBSB", "07": "BBBBBBSS", "08": "BSSSBBBB", "09": "SSSSSSSB", "10": "BSBSBBBS", "11": "SBBSSSBS", "12": "BSSSBSSS", "13": "BBSBSSBB", "14": "BBBSBBBS", "15": "SBSBSBSB", "16": "SBSSBSBS", "17": "BSSBBBBB", "18": "BBSSSBSB", "19": "BSSBBBBB", "20": "BBBBBBBB", "21": "BBBSSSSB", "22": "SBSSSSSS", "23": "BSBSBBSB", "24": "BSBSBSBB", "25": "BBSBBSSB", "26": "SBSBSSBB", "27": "SSBBBBSB", "28": "SBBBSBSB", "29": "SBSBSBSB", "30": "SSSBSBSS", "31": "SSSBBBBS", "32": "BBBBBBBS", "33": "BSSBSSBS", "34": "BBBSSBSB", "35": "BBSSBSSS", "36": "SSBBSBBB", "37": "BSBBSBSB", "38": "BSBBBSBB", "39": "SSSBBSSB", "40": "BBBSSSSB", "41": "SBSSBSSS", "42": "BBSBSBBB", "43": "BBSBBBSB", "44": "SSBBSSBB", "45": "SBBSBBSB", "46": "SSSBBSBS", "47": "SBBSBBBB", "48": "BSSSSSBB", "49": "BBBSSBBB", "50": "BSSBBBBS", "51": "BBSBSBBB", "52": "SSBBSSSS", "53": "SSBSBBSS", "54": "SBBBSSSS", "55": "SSSSSSSS", "56": "BBBSBBBS", "57": "BBBSSSBB", "58": "SBSBSSSB", "59": "BBSBSBBB", "60": "SBBSBBSB", "61": "SBBSBSSB", "62": "BBBBBBSS", "63": "SBSSBSBB", "64": "BBSSSSBB", "65": "BSBBBSBS", "66": "BSBSSBSB", "67": "BSSBSBSS", "68": "BBBBSBBS", "69": "BBSSSBSS", "70": "SSSBBSSB", "71": "BBBBSSBB", "72": "BSBBBSSB", "73": "BBBBBSBS", "74": "BBBSBSSB", "75": "SSBBBSBS", "76": "SSSSSBBS", "77": "SSBBBSBS", "78": "BBBBBBSS", "79": "BSBBBSSS", "80": "BBSSBBSS", "81": "BSSSBSBS", "82": "BBBSBSSB", "83": "BSSSSBSS", "84": "BBSBBSBB", "85": "SSBBBSBB", "86": "BBSBSSBB", "87": "BBSSBSSS", "88": "SSBSSBBS", "89": "BBSSBSBB", "90": "SBBSSSSS", "91": "SSBBSBSB", "92": "BSBBBBSB", "93": "BSSSBBBB", "94": "BSSBSBBS", "95": "SSSSSBSS", "96": "BSBSSSBB", "97": "SBSBBSSB", "98": "BBSBSSBB", "99": "BBSSSSBB" };
 
-// ပိုမိုတောက်ပသော အရောင် ၈ မျိုး
-const cardColors = [
-    "#1e90ff", // Dodger Blue
-    "#00ff7f", // Spring Green
-    "#ff1493", // Deep Pink
-    "#ff8c00", // Dark Orange
-    "#ffff00", // Yellow
-    "#00ffff", // Cyan
-    "#ff4500", // Orange Red
-    "#da70d6"  // Orchid
-];
+const cardColors = ["#1e90ff", "#00ff7f", "#ff1493", "#ff8c00", "#ffff00", "#00ffff", "#ff4500", "#da70d6"];
 
 let rawInputs = JSON.parse(localStorage.getItem('rawInputs')) || [];
 let activeTracks = JSON.parse(localStorage.getItem('activeTracks')) || [];
 let historyLog = JSON.parse(localStorage.getItem('historyLog')) || [];
 let lockedTrackId = localStorage.getItem('lockedTrackId') || null;
+// အရောင်အစီအစဉ်အတွက် global counter
+let trackCounter = parseInt(localStorage.getItem('trackCounter')) || 0;
 
 function saveData() {
     localStorage.setItem('rawInputs', JSON.stringify(rawInputs));
     localStorage.setItem('activeTracks', JSON.stringify(activeTracks));
     localStorage.setItem('historyLog', JSON.stringify(historyLog));
     localStorage.setItem('lockedTrackId', lockedTrackId);
+    localStorage.setItem('trackCounter', trackCounter);
 }
 
 function handleInput(num) {
@@ -166,8 +159,8 @@ function handleInput(num) {
 function createTrack(n1, n2, isLock) {
     const cat = n1.toString() + n2.toString();
     if (myPatterns[cat]) {
-        // နောက်ဆုံးထည့်လိုက်တဲ့ track ရဲ့ index ကိုမူတည်ပြီး အရောင်ရွေးခြင်း
-        const colorIdx = activeTracks.length % 8;
+        // trackCounter ကိုသုံးပြီး အရောင်ရွေးချယ်ခြင်း (နံပါတ်တူရင်တောင် အရောင်မတူစေရန်)
+        const colorIdx = trackCounter % 8;
         let newT = { 
             id: Date.now() + Math.random(), 
             digit: cat, 
@@ -177,6 +170,7 @@ function createTrack(n1, n2, isLock) {
             color: cardColors[colorIdx] 
         };
         activeTracks.push(newT);
+        trackCounter++; // counter တိုးပေးရန်
         if (isLock || !lockedTrackId) lockedTrackId = newT.id;
     }
 }
@@ -206,7 +200,6 @@ function renderUI() {
     document.getElementById('liveMonitor').innerHTML = activeTracks.map(t => {
         const isLock = t.id == lockedTrackId;
         const isUnl = t.wasLocked && !isLock;
-        // Option A: တစ်ကတ်လုံးကို ပေးထားတဲ့ တောက်ပြောင်သောအရောင်ဖြင့် ချယ်သခြင်း
         return `
         <div class="live-card ${isLock ? 'current-lock' : (isUnl ? 'unlocked-card' : '')}" style="background-color: ${t.color || '#161b22'}">
             <div class="live-info">
@@ -227,6 +220,7 @@ function undoInput() {
     if (rawInputs.length === 0) return;
     rawInputs.pop();
     activeTracks.forEach(t => { if (t.results.length > 0) t.results.pop(); });
+    // undo လုပ်ရင် counter ပြန်လျှော့နိုင်သော်လည်း logic ရှုပ်ထွေးနိုင်၍ ဒီတိုင်းထားခြင်းက ပိုစိတ်ချရပါသည်
     activeTracks = activeTracks.filter(t => t.results.length > 0 || t.id == lockedTrackId);
     saveData();
     renderUI();
@@ -241,7 +235,7 @@ function copyHistory() {
 
 function resetData() { 
     if(confirm("RESET ALL?")) { 
-        rawInputs=[]; activeTracks=[]; historyLog=[]; lockedTrackId=null; 
+        rawInputs=[]; activeTracks=[]; historyLog=[]; lockedTrackId=null; trackCounter=0;
         localStorage.clear();
         renderUI(); 
     } 
