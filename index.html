@@ -17,7 +17,6 @@ h4 { margin: 0 0 5px 0; color: var(--gold); border-bottom: 1px solid var(--borde
 }
 .recent-label { font-size: 9px; color: var(--silver); text-transform: uppercase; font-weight: bold; }
 
-/* ပုံမှန် ဂဏန်းအဝိုင်းလေးများ */
 .num-circle { 
     width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; 
     border-radius: 50%; background: #21262d; border: 1px solid var(--border);
@@ -25,11 +24,10 @@ h4 { margin: 0 0 5px 0; color: var(--gold); border-bottom: 1px solid var(--borde
     transition: all 0.3s ease;
 }
 
-/* နောက်ဆုံးရိုက်လိုက်သောဂဏန်းအတွက် မျက်စိအေးစေမည့် အလင်း Effect */
 .num-circle.latest { 
     border-color: var(--mint) !important; 
     color: white !important; 
-    background: #1b4d3e; /* အစိမ်းရင့်ရောင် */
+    background: #1b4d3e; 
     box-shadow: 0 0 12px rgba(46, 204, 113, 0.6); 
     animation: soothing-glow 0.6s ease-out;
 }
@@ -40,17 +38,17 @@ h4 { margin: 0 0 5px 0; color: var(--gold); border-bottom: 1px solid var(--borde
 }
 
 .live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
-.live-card { background: #000; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--border); position: relative; }
-.current-lock { border: 1.5px solid var(--gold) !important; }
-.unlocked-card { border: 1px solid #444; opacity: 0.7; }
+.live-card { padding: 6px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); position: relative; transition: all 0.3s; }
 
-.status-tag { font-size: 8px; font-weight: bold; padding: 1px 3px; border-radius: 3px; margin-right: 4px; }
-.tag-locked { background: var(--gold); color: #000; }
-.tag-unlocked { background: #444; color: var(--silver); }
+/* Locked Card အတွက် အထူး Glow */
+.current-lock { border: 2px solid white !important; box-shadow: 0 0 10px rgba(255,255,255,0.3); z-index: 1; }
+.unlocked-card { opacity: 0.5; filter: grayscale(0.3); }
 
-.live-info { display: flex; justify-content: space-between; align-items: center; font-size: 9px; margin-bottom: 3px; }
+.status-tag { font-size: 8px; font-weight: bold; padding: 1px 4px; border-radius: 3px; margin-right: 4px; background: rgba(0,0,0,0.5); color: #fff; }
+
+.live-info { display: flex; justify-content: space-between; align-items: center; font-size: 11px; margin-bottom: 5px; color: white; font-weight: bold; }
 .live-dots { display: flex; gap: 1.5px; }
-.dot { flex: 1; height: 3px; border-radius: 1px; background: #222; }
+.dot { flex: 1; height: 4px; border-radius: 1px; background: rgba(0,0,0,0.3); }
 
 .history-container { height: 280px; overflow-y: auto; background: #000; border: 1px solid #222; border-radius: 8px; }
 table { width: 100%; border-collapse: collapse; font-size: 11px; }
@@ -119,6 +117,18 @@ td { padding: 8px 4px; border-bottom: 1px solid #111; text-align: center; }
 <script>
 const myPatterns = { "00": "SBSSSSBS", "01": "SBBSBSBB", "02": "BBSBSSSS", "03": "BSBSSSBB", "04": "SSBBBBSB", "05": "BSSBBSSS", "06": "SBBBBBSB", "07": "BBBBBBSS", "08": "BSSSBBBB", "09": "SSSSSSSB", "10": "BSBSBBBS", "11": "SBBSSSBS", "12": "BSSSBSSS", "13": "BBSBSSBB", "14": "BBBSBBBS", "15": "SBSBSBSB", "16": "SBSSBSBS", "17": "BSSBBBBB", "18": "BBSSSBSB", "19": "BSSBBBBB", "20": "BBBBBBBB", "21": "BBBSSSSB", "22": "SBSSSSSS", "23": "BSBSBBSB", "24": "BSBSBSBB", "25": "BBSBBSSB", "26": "SBSBSSBB", "27": "SSBBBBSB", "28": "SBBBSBSB", "29": "SBSBSBSB", "30": "SSSBSBSS", "31": "SSSBBBBS", "32": "BBBBBBBS", "33": "BSSBSSBS", "34": "BBBSSBSB", "35": "BBSSBSSS", "36": "SSBBSBBB", "37": "BSBBSBSB", "38": "BSBBBSBB", "39": "SSSBBSSB", "40": "BBBSSSSB", "41": "SBSSBSSS", "42": "BBSBSBBB", "43": "BBSBBBSB", "44": "SSBBSSBB", "45": "SBBSBBSB", "46": "SSSBBSBS", "47": "SBBSBBBB", "48": "BSSSSSBB", "49": "BBBSSBBB", "50": "BSSBBBBS", "51": "BBSBSBBB", "52": "SSBBSSSS", "53": "SSBSBBSS", "54": "SBBBSSSS", "55": "SSSSSSSS", "56": "BBBSBBBS", "57": "BBBSSSBB", "58": "SBSBSSSB", "59": "BBSBSBBB", "60": "SBBSBBSB", "61": "SBBSBSSB", "62": "BBBBBBSS", "63": "SBSSBSBB", "64": "BBSSSSBB", "65": "BSBBBSBS", "66": "BSBSSBSB", "67": "BSSBSBSS", "68": "BBBBSBBS", "69": "BBSSSBSS", "70": "SSSBBSSB", "71": "BBBBSSBB", "72": "BSBBBSSB", "73": "BBBBBSBS", "74": "BBBSBSSB", "75": "SSBBBSBS", "76": "SSSSSBBS", "77": "SSBBBSBS", "78": "BBBBBBSS", "79": "BSBBBSSS", "80": "BBSSBBSS", "81": "BSSSBSBS", "82": "BBBSBSSB", "83": "BSSSSBSS", "84": "BBSBBSBB", "85": "SSBBBSBB", "86": "BBSBSSBB", "87": "BBSSBSSS", "88": "SSBSSBBS", "89": "BBSSBSBB", "90": "SBBSSSSS", "91": "SSBBSBSB", "92": "BSBBBBSB", "93": "BSSSBBBB", "94": "BSSBSBBS", "95": "SSSSSBSS", "96": "BSBSSSBB", "97": "SBSBBSSB", "98": "BBSBSSBB", "99": "BBSSSSBB" };
 
+// အရောင် ၈ မျိုး သတ်မှတ်ခြင်း
+const cardColors = [
+    "#2c3e50", // Dark Blue
+    "#1e8449", // Green
+    "#8e44ad", // Purple
+    "#d35400", // Orange
+    "#c0392b", // Red
+    "#16a085", // Teal
+    "#2980b9", // Sky Blue
+    "#7f8c8d"  // Grey
+];
+
 let rawInputs = JSON.parse(localStorage.getItem('rawInputs')) || [];
 let activeTracks = JSON.parse(localStorage.getItem('activeTracks')) || [];
 let historyLog = JSON.parse(localStorage.getItem('historyLog')) || [];
@@ -156,7 +166,16 @@ function handleInput(num) {
 function createTrack(n1, n2, isLock) {
     const cat = n1.toString() + n2.toString();
     if (myPatterns[cat]) {
-        let newT = { id: Date.now() + Math.random(), digit: cat, pattern: myPatterns[cat], results: [], wasLocked: isLock };
+        // အရောင် Index ကို 0-7 ကြား ပတ်လှည့်ယူခြင်း
+        const colorIdx = activeTracks.length % 8;
+        let newT = { 
+            id: Date.now() + Math.random(), 
+            digit: cat, 
+            pattern: myPatterns[cat], 
+            results: [], 
+            wasLocked: isLock,
+            color: cardColors[colorIdx] 
+        };
         activeTracks.push(newT);
         if (isLock || !lockedTrackId) lockedTrackId = newT.id;
     }
@@ -187,13 +206,14 @@ function renderUI() {
     document.getElementById('liveMonitor').innerHTML = activeTracks.map(t => {
         const isLock = t.id == lockedTrackId;
         const isUnl = t.wasLocked && !isLock;
+        // Option A: ကဒ်တစ်ခုလုံးကို သူ့အရောင်နဲ့ ချယ်ခြင်း
         return `
-        <div class="live-card ${isLock ? 'current-lock' : (isUnl ? 'unlocked-card' : '')}">
+        <div class="live-card ${isLock ? 'current-lock' : (isUnl ? 'unlocked-card' : '')}" style="background-color: ${t.color || '#161b22'}">
             <div class="live-info">
-                <span><span class="status-tag ${isLock ? 'tag-locked' : 'tag-unlocked'}">${isLock ? '🔒' : (isUnl ? '🔓' : 'A')}</span>${t.digit}</span>
-                <span style="color:var(--gold)">${t.pattern[t.results.length] || 'END'}</span>
+                <span><span class="status-tag">${isLock ? '🔒' : (isUnl ? '🔓' : 'A')}</span>${t.digit}</span>
+                <span style="color:var(--gold); font-size:12px;">${t.pattern[t.results.length] || 'END'}</span>
             </div>
-            <div class="live-dots">${t.pattern.split('').map((p, i) => `<div class="dot" style="background:${t.results[i] === '✅' ? 'var(--green)' : (t.results[i] === '❌' ? 'var(--red)' : '#222')}"></div>`).join('')}</div>
+            <div class="live-dots">${t.pattern.split('').map((p, i) => `<div class="dot" style="background:${t.results[i] === '✅' ? 'var(--mint)' : (t.results[i] === '❌' ? 'var(--red)' : 'rgba(0,0,0,0.3)')}"></div>`).join('')}</div>
         </div>`;
     }).join('');
 
