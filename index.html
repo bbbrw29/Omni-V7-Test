@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VIP STEALTH PRO - MODERN DESIGN</title>
+<title>VIP STEALTH PRO - EYE CARE DESIGN</title>
 <style>
-:root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --blue: #58a6ff; --gold: #ffd700; --silver: #8b949e; --green: #238636; --red: #f85149; }
+:root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --blue: #58a6ff; --gold: #ffd700; --silver: #8b949e; --green: #238636; --red: #f85149; --mint: #2ecc71; }
 body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 8px; margin: 0; }
 .container { max-width: 420px; margin: auto; }
 .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px; margin-bottom: 8px; }
@@ -16,12 +16,28 @@ h4 { margin: 0 0 5px 0; color: var(--gold); border-bottom: 1px solid var(--borde
     background: rgba(0,0,0,0.3); border-radius: 8px;
 }
 .recent-label { font-size: 9px; color: var(--silver); text-transform: uppercase; font-weight: bold; }
+
+/* ပုံမှန် ဂဏန်းအဝိုင်းလေးများ */
 .num-circle { 
-    width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; 
+    width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; 
     border-radius: 50%; background: #21262d; border: 1px solid var(--border);
-    font-size: 12px; font-weight: bold; color: var(--text);
+    font-size: 13px; font-weight: bold; color: var(--text);
+    transition: all 0.3s ease;
 }
-.num-circle.latest { border-color: var(--blue); color: var(--blue); box-shadow: 0 0 5px rgba(88, 166, 255, 0.4); }
+
+/* နောက်ဆုံးရိုက်လိုက်သောဂဏန်းအတွက် မျက်စိအေးစေမည့် အလင်း Effect */
+.num-circle.latest { 
+    border-color: var(--mint) !important; 
+    color: white !important; 
+    background: #1b4d3e; /* အစိမ်းရင့်ရောင် */
+    box-shadow: 0 0 12px rgba(46, 204, 113, 0.6); 
+    animation: soothing-glow 0.6s ease-out;
+}
+
+@keyframes soothing-glow {
+    0% { transform: scale(1.15); background: var(--mint); box-shadow: 0 0 20px var(--mint); }
+    100% { transform: scale(1); background: #1b4d3e; }
+}
 
 .live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
 .live-card { background: #000; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--border); position: relative; }
@@ -43,7 +59,6 @@ td { padding: 8px 4px; border-bottom: 1px solid #111; text-align: center; }
 
 .copy-btn { background: var(--blue); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 10px; cursor: pointer; float: right; margin-bottom: 5px; }
 
-/* Keyboard Layout Update */
 .numpad-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
 .num-btn { height: 45px; background: #21262d; border: 1px solid var(--border); color: #fff; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
 .undo-btn { background: #30363d !important; color: var(--gold) !important; font-size: 12px !important; }
@@ -61,7 +76,7 @@ td { padding: 8px 4px; border-bottom: 1px solid #111; text-align: center; }
         
         <div class="recent-wrapper">
             <span class="recent-label">History:</span>
-            <div id="recentDisplay" style="display: flex; gap: 5px;">
+            <div id="recentDisplay" style="display: flex; gap: 6px;">
                 <div class="num-circle">-</div><div class="num-circle">-</div><div class="num-circle">-</div><div class="num-circle">-</div><div class="num-circle">-</div>
             </div>
         </div>
@@ -104,7 +119,6 @@ td { padding: 8px 4px; border-bottom: 1px solid #111; text-align: center; }
 <script>
 const myPatterns = { "00": "SBSSSSBS", "01": "SBBSBSBB", "02": "BBSBSSSS", "03": "BSBSSSBB", "04": "SSBBBBSB", "05": "BSSBBSSS", "06": "SBBBBBSB", "07": "BBBBBBSS", "08": "BSSSBBBB", "09": "SSSSSSSB", "10": "BSBSBBBS", "11": "SBBSSSBS", "12": "BSSSBSSS", "13": "BBSBSSBB", "14": "BBBSBBBS", "15": "SBSBSBSB", "16": "SBSSBSBS", "17": "BSSBBBBB", "18": "BBSSSBSB", "19": "BSSBBBBB", "20": "BBBBBBBB", "21": "BBBSSSSB", "22": "SBSSSSSS", "23": "BSBSBBSB", "24": "BSBSBSBB", "25": "BBSBBSSB", "26": "SBSBSSBB", "27": "SSBBBBSB", "28": "SBBBSBSB", "29": "SBSBSBSB", "30": "SSSBSBSS", "31": "SSSBBBBS", "32": "BBBBBBBS", "33": "BSSBSSBS", "34": "BBBSSBSB", "35": "BBSSBSSS", "36": "SSBBSBBB", "37": "BSBBSBSB", "38": "BSBBBSBB", "39": "SSSBBSSB", "40": "BBBSSSSB", "41": "SBSSBSSS", "42": "BBSBSBBB", "43": "BBSBBBSB", "44": "SSBBSSBB", "45": "SBBSBBSB", "46": "SSSBBSBS", "47": "SBBSBBBB", "48": "BSSSSSBB", "49": "BBBSSBBB", "50": "BSSBBBBS", "51": "BBSBSBBB", "52": "SSBBSSSS", "53": "SSBSBBSS", "54": "SBBBSSSS", "55": "SSSSSSSS", "56": "BBBSBBBS", "57": "BBBSSSBB", "58": "SBSBSSSB", "59": "BBSBSBBB", "60": "SBBSBBSB", "61": "SBBSBSSB", "62": "BBBBBBSS", "63": "SBSSBSBB", "64": "BBSSSSBB", "65": "BSBBBSBS", "66": "BSBSSBSB", "67": "BSSBSBSS", "68": "BBBBSBBS", "69": "BBSSSBSS", "70": "SSSBBSSB", "71": "BBBBSSBB", "72": "BSBBBSSB", "73": "BBBBBSBS", "74": "BBBSBSSB", "75": "SSBBBSBS", "76": "SSSSSBBS", "77": "SSBBBSBS", "78": "BBBBBBSS", "79": "BSBBBSSS", "80": "BBSSBBSS", "81": "BSSSBSBS", "82": "BBBSBSSB", "83": "BSSSSBSS", "84": "BBSBBSBB", "85": "SSBBBSBB", "86": "BBSBSSBB", "87": "BBSSBSSS", "88": "SSBSSBBS", "89": "BBSSBSBB", "90": "SBBSSSSS", "91": "SSBBSBSB", "92": "BSBBBBSB", "93": "BSSSBBBB", "94": "BSSBSBBS", "95": "SSSSSBSS", "96": "BSBSSSBB", "97": "SBSBBSSB", "98": "BBSBSSBB", "99": "BBSSSSBB" };
 
-// LocalStorage မှ Data များကို ပြန်ခေါ်ယူခြင်း
 let rawInputs = JSON.parse(localStorage.getItem('rawInputs')) || [];
 let activeTracks = JSON.parse(localStorage.getItem('activeTracks')) || [];
 let historyLog = JSON.parse(localStorage.getItem('historyLog')) || [];
@@ -115,15 +129,6 @@ function saveData() {
     localStorage.setItem('activeTracks', JSON.stringify(activeTracks));
     localStorage.setItem('historyLog', JSON.stringify(historyLog));
     localStorage.setItem('lockedTrackId', lockedTrackId);
-}
-
-function undoInput() {
-    if (rawInputs.length === 0) return;
-    rawInputs.pop();
-    activeTracks.forEach(t => { if (t.results.length > 0) t.results.pop(); });
-    activeTracks = activeTracks.filter(t => t.results.length > 0 || t.id == lockedTrackId);
-    saveData();
-    renderUI();
 }
 
 function handleInput(num) {
@@ -166,7 +171,7 @@ function renderUI() {
     const last5 = rawInputs.slice(-5);
     const recentHTML = [0,1,2,3,4].map(i => {
         const val = last5[i] !== undefined ? last5[i] : "-";
-        const isLatest = (i === last5.length - 1 && val !== "-");
+        const isLatest = (val !== "-" && i === last5.length - 1);
         return `<div class="num-circle ${isLatest ? 'latest' : ''}">${val}</div>`;
     }).join('');
     document.getElementById('recentDisplay').innerHTML = recentHTML;
@@ -196,6 +201,15 @@ function renderUI() {
         const icon = h.wasLocked ? '<span style="color:var(--gold)">🔒</span>' : '<span style="color:var(--silver); opacity:0.5;">🔓</span>';
         return `<tr><td>${historyLog.length - index}</td><td style="text-align:left; padding-left:10px;">${icon} ${h.digit}</td><td>${h.results.join('')}</td><td style="color:${h.results.includes('✅')?'var(--green)':'var(--red)'}; font-weight:bold;">${h.results.includes('✅')?'WIN':'LOSS'}</td></tr>`;
     }).join('');
+}
+
+function undoInput() {
+    if (rawInputs.length === 0) return;
+    rawInputs.pop();
+    activeTracks.forEach(t => { if (t.results.length > 0) t.results.pop(); });
+    activeTracks = activeTracks.filter(t => t.results.length > 0 || t.id == lockedTrackId);
+    saveData();
+    renderUI();
 }
 
 function copyHistory() {
