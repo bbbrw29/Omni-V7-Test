@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VIP STEALTH PRO - 3-LAYER LIVE DESIGN</title>
+<title>VIP STEALTH PRO - SINGLE PRED DESIGN</title>
 <style>
 :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --blue: #58a6ff; --gold: #ffd700; --silver: #8b949e; --green: #238636; --red: #f85149; --mint: #2ecc71; }
 body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 8px; margin: 0; overflow-x: hidden; }
@@ -39,7 +39,6 @@ h4 { margin: 0 0 5px 0; color: var(--gold); border-bottom: 1px solid var(--borde
 .level-badge { font-size: 9px; background: var(--gold); color: #000; padding: 1px 5px; border-radius: 10px; font-weight: bold; }
 .live-info { display: flex; justify-content: space-between; align-items: center; font-size: 11px; margin-bottom: 5px; color: #fff; font-weight: 900; }
 
-/* ၃ ထပ် Grid Style */
 .three-layer-monitor { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; padding: 6px; background: rgba(0,0,0,0.3); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); }
 .cell-stack { display: flex; flex-direction: column; gap: 3px; align-items: center; }
 .comp-dot { width: 5px; height: 5px; border-radius: 50%; }
@@ -169,11 +168,14 @@ function renderUI() {
         const isLock = t.id == lockedTrackId;
         const isUnl = t.wasLocked && !isLock;
         
-        // --- Latest Reference (Live ကို History ထက် ဦးစားပေးရန်) ---
         let allPotential = [...historyLog, ...activeTracks].filter(x => x.id !== t.id);
         let refSource = allPotential
             .filter(r => r.digit[0] === t.digit[0])
             .sort((a,b) => b.id - a.id)[0];
+
+        // လက်ရှိ Pos အတွက် Prediction (S/B) တစ်လုံးတည်းကို ရယူခြင်း
+        const currentPos = t.results.length;
+        const currentPred = t.pattern[currentPos] || '-';
 
         let layers = '';
         for(let pos=0; pos<8; pos++) {
@@ -193,8 +195,13 @@ function renderUI() {
         return `
         <div class="live-card ${isLock ? 'current-lock' : (isUnl ? 'unlocked-card' : '')}">
             <div class="live-info">
-                <span><span class="status-tag">${isLock ? '🔒' : 'A'}</span>${t.digit}</span>
-                <span class="level-badge">L${t.results.length + 1 > 8 ? 8 : t.results.length + 1}</span>
+                <span>
+                    <span class="status-tag">${isLock ? '🔒' : 'A'}</span>${t.digit}
+                    <span style="color:var(--silver); font-weight:normal; margin-left:4px;">L${currentPos + 1 > 8 ? 8 : currentPos + 1}</span>
+                </span>
+                <span style="font-size:16px; color:${currentPred==='B'?'var(--blue)':'#fff'}; background:rgba(255,255,255,0.1); padding:2px 8px; border-radius:4px;">
+                    ${currentPred}
+                </span>
             </div>
             <div class="three-layer-monitor">${layers}</div>
         </div>`;
@@ -229,3 +236,5 @@ renderUI();
 </script>
 </body>
 </html>
+
+
