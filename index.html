@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VIP STEALTH PRO - EYE CARE DESIGN</title>
+<title>VIP STEALTH PRO - 3-LAYER LIVE DESIGN</title>
 <style>
 :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --blue: #58a6ff; --gold: #ffd700; --silver: #8b949e; --green: #238636; --red: #f85149; --mint: #2ecc71; }
-body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 8px; margin: 0; }
+body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 8px; margin: 0; overflow-x: hidden; }
 .container { max-width: 420px; margin: auto; }
 .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px; margin-bottom: 8px; }
 h4 { margin: 0 0 5px 0; color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 5px; font-size: 10px; }
@@ -21,7 +21,6 @@ h4 { margin: 0 0 5px 0; color: var(--gold); border-bottom: 1px solid var(--borde
     width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; 
     border-radius: 50%; background: #21262d; border: 1px solid var(--border);
     font-size: 13px; font-weight: bold; color: var(--text);
-    transition: all 0.3s ease;
 }
 
 .num-circle.latest { 
@@ -29,30 +28,22 @@ h4 { margin: 0 0 5px 0; color: var(--gold); border-bottom: 1px solid var(--borde
     color: white !important; 
     background: #1b4d3e; 
     box-shadow: 0 0 12px rgba(46, 204, 113, 0.6); 
-    animation: soothing-glow 0.6s ease-out;
-}
-
-@keyframes soothing-glow {
-    0% { transform: scale(1.15); background: var(--mint); box-shadow: 0 0 20px var(--mint); }
-    100% { transform: scale(1); background: #1b4d3e; }
 }
 
 .live-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
 .live-card { padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: #1c2128; position: relative; transition: all 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-
 .current-lock { border: 2.5px solid #ffffff !important; box-shadow: 0 0 15px rgba(255,255,255,0.3); z-index: 1; transform: scale(1.02); }
 .unlocked-card { opacity: 0.5; filter: grayscale(0.3); }
 
 .status-tag { font-size: 8px; font-weight: bold; padding: 2px 4px; border-radius: 3px; margin-right: 4px; background: rgba(0,0,0,0.6); color: #fff; }
 .level-badge { font-size: 9px; background: var(--gold); color: #000; padding: 1px 5px; border-radius: 10px; font-weight: bold; }
-
 .live-info { display: flex; justify-content: space-between; align-items: center; font-size: 11px; margin-bottom: 5px; color: #fff; font-weight: 900; }
 
-/* ၃ ထပ် ပြသရန် Style များ */
-.three-layer-monitor { display: flex; flex-direction: column; gap: 4px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 4px; }
-.layer-row { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; }
-.cell { height: 12px; display: flex; align-items: center; justify-content: center; font-size: 8px; border-radius: 2px; background: rgba(255,255,255,0.03); }
+/* ၃ ထပ် Grid Style */
+.three-layer-monitor { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; padding: 6px; background: rgba(0,0,0,0.3); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); }
+.cell-stack { display: flex; flex-direction: column; gap: 3px; align-items: center; }
 .comp-dot { width: 5px; height: 5px; border-radius: 50%; }
+.res-cell { width: 100%; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; border-radius: 2px; }
 
 .history-container { height: 280px; overflow-y: auto; background: #000; border: 1px solid #222; border-radius: 8px; }
 table { width: 100%; border-collapse: collapse; font-size: 11px; }
@@ -60,7 +51,6 @@ th { position: sticky; top: 0; background: #111; padding: 8px; font-size: 10px; 
 td { padding: 8px 4px; border-bottom: 1px solid #111; text-align: center; }
 
 .copy-btn { background: var(--blue); color: white; border: none; padding: 5px 10px; border-radius: 4px; font-size: 10px; cursor: pointer; float: right; margin-bottom: 5px; }
-
 .numpad-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
 .num-btn { height: 45px; background: #21262d; border: 1px solid var(--border); color: #fff; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
 .undo-btn { background: #30363d !important; color: var(--gold) !important; font-size: 12px !important; }
@@ -91,15 +81,7 @@ td { padding: 8px 4px; border-bottom: 1px solid #111; text-align: center; }
 
     <div class="panel">
         <div class="numpad-grid">
-            <button class="num-btn" onclick="handleInput(1)">1</button>
-            <button class="num-btn" onclick="handleInput(2)">2</button>
-            <button class="num-btn" onclick="handleInput(3)">3</button>
-            <button class="num-btn" onclick="handleInput(4)">4</button>
-            <button class="num-btn" onclick="handleInput(5)">5</button>
-            <button class="num-btn" onclick="handleInput(6)">6</button>
-            <button class="num-btn" onclick="handleInput(7)">7</button>
-            <button class="num-btn" onclick="handleInput(8)">8</button>
-            <button class="num-btn" onclick="handleInput(9)">9</button>
+            <script>for(let i=1; i<=9; i++) document.write(`<button class="num-btn" onclick="handleInput(${i})">${i}</button>`);</script>
             <button class="num-btn" onclick="handleInput(0)">0</button>
             <button class="num-btn undo-btn" style="grid-column: span 5; height: 40px;" onclick="undoInput()">UNDO</button>
         </div>
@@ -171,18 +153,15 @@ function renderUI() {
     document.getElementById('statusLabel').innerText = locked ? `LOCKED: ${locked.digit}` : "WAITING...";
 
     const last5 = rawInputs.slice(-5);
-    const recentHTML = [0,1,2,3,4].map(i => {
+    document.getElementById('recentDisplay').innerHTML = [0,1,2,3,4].map(i => {
         const val = last5[i] !== undefined ? last5[i] : "-";
-        const isLatest = (val !== "-" && i === last5.length - 1);
-        return `<div class="num-circle ${isLatest ? 'latest' : ''}">${val}</div>`;
+        return `<div class="num-circle ${val !== "-" && i === last5.length-1 ? 'latest' : ''}">${val}</div>`;
     }).join('');
-    document.getElementById('recentDisplay').innerHTML = recentHTML;
 
     for(let i=0; i<8; i++) {
         let el = document.getElementById(`step-${i}`);
         let res = locked ? locked.results[i] : "";
         el.style.background = res==='✅'?'var(--green)':(res==='❌'?'var(--red)':'#111');
-        el.style.border = (i===stepIdx) ? '1.5px solid var(--gold)' : '1px solid #333';
         el.innerText = res || (i+1);
     }
 
@@ -190,7 +169,7 @@ function renderUI() {
         const isLock = t.id == lockedTrackId;
         const isUnl = t.wasLocked && !isLock;
         
-        // --- Latest Reference ရှာဖွေခြင်း (History + Live) ---
+        // --- Latest Reference (Live ကို History ထက် ဦးစားပေးရန်) ---
         let allPotential = [...historyLog, ...activeTracks].filter(x => x.id !== t.id);
         let refSource = allPotential
             .filter(r => r.digit[0] === t.digit[0])
@@ -198,60 +177,32 @@ function renderUI() {
 
         let layers = '';
         for(let pos=0; pos<8; pos++) {
-            const currentRes = t.results[pos]; // ✅ or ❌
+            const currentRes = t.results[pos];
             const refRes = refSource ? refSource.results[pos] : null;
+            let matchCol = 'transparent';
+            if(currentRes && refRes) matchCol = (currentRes === refRes) ? 'var(--mint)' : 'var(--red)';
 
-            // Layer 1: Compare (🟢 or 🔴)
-            let compHTML = '<div class="cell"></div>';
-            if (currentRes && refRes) {
-                const isMatch = currentRes === refRes;
-                compHTML = `<div class="cell"><div class="comp-dot" style="background:${isMatch?'var(--green)':'var(--red)'}"></div></div>`;
-            }
-
-            // Layer 2: Live (✅/❌)
-            let liveHTML = `<div class="cell" style="color:${currentRes==='✅'?'var(--mint)':'var(--red)'}">${currentRes||''}</div>`;
-
-            // Layer 3: Reference (✅/❌)
-            let refHTML = `<div class="cell" style="opacity:0.5; color:${refRes==='✅'?'var(--mint)':'var(--red)'}">${refRes||''}</div>`;
-
-            layers += `<div class="dot-col">${compHTML}${liveHTML}${refHTML}</div>`;
+            layers += `
+                <div class="cell-stack">
+                    <div class="comp-dot" style="background:${matchCol}; box-shadow: ${matchCol!=='transparent' ? '0 0 4px '+matchCol : 'none'}"></div>
+                    <div class="res-cell" style="color:${currentRes==='✅'?'var(--mint)':'var(--red)'}; background:rgba(255,255,255,0.03);">${currentRes||''}</div>
+                    <div class="res-cell" style="opacity:0.4; color:${refRes==='✅'?'var(--mint)':'var(--red)'}; font-size:9px;">${refRes||''}</div>
+                </div>`;
         }
 
         return `
         <div class="live-card ${isLock ? 'current-lock' : (isUnl ? 'unlocked-card' : '')}">
             <div class="live-info">
-                <span><span class="status-tag">${isLock ? '🔒' : (isUnl ? '🔓' : 'A')}</span>${t.digit}</span>
-                <span class="level-badge">L${t.results.length + 1}</span>
+                <span><span class="status-tag">${isLock ? '🔒' : 'A'}</span>${t.digit}</span>
+                <span class="level-badge">L${t.results.length + 1 > 8 ? 8 : t.results.length + 1}</span>
             </div>
-            <div class="three-layer-monitor">
-                <div class="layer-row">
-                    ${[0,1,2,3,4,5,6,7].map(pos => {
-                        const currentRes = t.results[pos];
-                        const refRes = refSource ? refSource.results[pos] : null;
-                        let compCol = 'transparent';
-                        if(currentRes && refRes) compCol = (currentRes === refRes) ? 'var(--green)' : 'var(--red)';
-                        return `<div class="cell"><div class="comp-dot" style="background:${compCol}"></div></div>`;
-                    }).join('')}
-                </div>
-                <div class="layer-row">
-                    ${[0,1,2,3,4,5,6,7].map(pos => {
-                        const res = t.results[pos] || '';
-                        return `<div class="cell" style="color:${res==='✅'?'var(--mint)':'var(--red)'}; font-weight:bold;">${res}</div>`;
-                    }).join('')}
-                </div>
-                <div class="layer-row">
-                    ${[0,1,2,3,4,5,6,7].map(pos => {
-                        const res = (refSource && refSource.results[pos]) ? refSource.results[pos] : '';
-                        return `<div class="cell" style="opacity:0.6; color:${res==='✅'?'#fff':'#777'}">${res}</div>`;
-                    }).join('')}
-                </div>
-            </div>
+            <div class="three-layer-monitor">${layers}</div>
         </div>`;
     }).join('');
 
-    document.getElementById('historyBody').innerHTML = historyLog.slice(0, 100).map((h, index) => {
-        const icon = h.wasLocked ? '<span style="color:var(--gold)">🔒</span>' : '<span style="color:var(--silver); opacity:0.5;">🔓</span>';
-        return `<tr><td>${historyLog.length - index}</td><td style="text-align:left; padding-left:10px;">${icon} ${h.digit}</td><td>${h.results.join('')}</td><td style="color:${h.results.includes('✅')?'var(--green)':'var(--red)'}; font-weight:bold;">${h.results.includes('✅')?'WIN':'LOSS'}</td></tr>`;
+    document.getElementById('historyBody').innerHTML = historyLog.slice(0, 50).map((h, index) => {
+        const icon = h.wasLocked ? '<span style="color:var(--gold)">🔒</span>' : '🔓';
+        return `<tr><td>${historyLog.length - index}</td><td>${icon} ${h.digit}</td><td>${h.results.join('')}</td><td style="color:${h.results.includes('✅')?'var(--green)':'var(--red)'}">${h.results.includes('✅')?'WIN':'LOSS'}</td></tr>`;
     }).join('');
 }
 
@@ -272,11 +223,7 @@ function copyHistory() {
 }
 
 function resetData() { 
-    if(confirm("RESET ALL?")) { 
-        rawInputs=[]; activeTracks=[]; historyLog=[]; lockedTrackId=null;
-        localStorage.clear();
-        renderUI(); 
-    } 
+    if(confirm("RESET ALL?")) { localStorage.clear(); location.reload(); } 
 }
 renderUI();
 </script>
